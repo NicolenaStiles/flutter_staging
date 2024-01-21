@@ -1,6 +1,6 @@
 {
-    "name": "test_counter_app",
-    "short_name": "test_counter_app",
+    "name": "definitely_not_breakout",
+    "short_name": "definitely_not_breakout",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
