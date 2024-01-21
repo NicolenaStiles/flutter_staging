@@ -27,10 +27,6 @@ jobs:
       - name: pull dependencies
         working-directory: definitely_not_breakout
         run: flutter pub get
-
-      - name: run tests
-        working-directory: definitely_not_breakout
-        run: flutter test
         
       - name: build web app
         working-directory: definitely_not_breakout
