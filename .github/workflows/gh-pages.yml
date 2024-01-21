@@ -21,22 +21,22 @@ jobs:
           channel: 'stable'
 
       - name: enable flutter web
-        working-directory: test_counter_app
+        working-directory: definitley_not_breakout
         run: flutter config --enable-web
 
       - name: pull dependencies
-        working-directory: test_counter_app
+        working-directory: definitley_not_breakout
         run: flutter pub get
 
       - name: run tests
-        working-directory: test_counter_app
+        working-directory: definitley_not_breakout
         run: flutter test
         
       - name: build web app
-        working-directory: test_counter_app
+        working-directory: definitley_not_breakout
         run: flutter build web --web-renderer canvaskit --base-href /flutter_staging/ --release
 
       - name: deploy to gh pages
         uses: JamesIves/github-pages-deploy-action@v4
         with: 
-          folder: test_counter_app/build/web
+          folder: definitley_not_breakout/build/web
