@@ -26,5 +26,5 @@ flutter:
   fonts:
     - family: Hyperspace
       fonts:
-        - asset: assets/Hyperspace/HyperspaceBold-GM0g.ttf
+        - asset: assets/fonts/Hyperspace/HyperspaceBold-GM0g.ttf
           weight : 100 
