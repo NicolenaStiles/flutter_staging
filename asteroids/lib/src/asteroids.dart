@@ -11,13 +11,18 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:google_fonts/google_fonts.dart';
+
 // configuration
 import 'config.dart' as game_settings;
 
-// play area
+// player, asteroid, shot 
 import 'components/components.dart';
 
 // score style rendering
+// TODO: something with font rendering is not working when deploying to pages.
+// I may need to also just commit the files for now.
+const testScoreStyle = GoogleFonts.pressStart2p;
 const scoreStyle = TextStyle(color: Colors.white, 
                              fontSize: 48.0, 
                              fontFamily: 'Hyperspace');
