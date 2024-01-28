@@ -45,4 +45,4 @@ app.*.map.json
 
 # Custom
 # avoid version-controlling fonts (put these on server or something else)
-fonts/
+# fonts/
