@@ -1,6 +1,6 @@
 {
-    "name": "definitely_not_breakout",
-    "short_name": "definitely_not_breakout",
+    "name": "asteroids",
+    "short_name": "asteroids",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
