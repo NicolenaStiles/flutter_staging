@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 void main() {
   runApp(const MainApp());
@@ -17,6 +18,12 @@ class _MyMainAppState extends State<MainApp> {
   String _height = "";
   String _padding = "";
   String _safeHeight = "";
+  String _dWeb = "";
+  String _dTarget = "";
+
+  final isWebMobile = kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.iOS ||
+       defaultTargetPlatform == TargetPlatform.android);
 
   void _updateFields() {
     setState(() {
@@ -31,12 +38,16 @@ class _MyMainAppState extends State<MainApp> {
       _height = height.toString(); 
       _padding = padding.toString(); 
       _safeHeight = safeHeight.toString(); 
+      _dWeb = kIsWeb.toString();
+      _dTarget = defaultTargetPlatform.toString();
+
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData.dark(useMaterial3: true),
       home: Scaffold(
         body: Center(
           child: Column( 
@@ -47,6 +58,8 @@ class _MyMainAppState extends State<MainApp> {
               Text('Height : $_height'),
               Text('Padding : $_padding'),
               Text('Safe Height : $_safeHeight'),
+              Text('Is web? : $_dWeb'),
+              Text('Platform : $_dTarget'),
             ],
           ),
         ),
