@@ -21,18 +21,18 @@ jobs:
           channel: 'stable'
 
       - name: enable flutter web
-        working-directory: window_resize_test
+        working-directory: asteroids
         run: flutter config --enable-web
 
       - name: pull dependencies
-        working-directory: window_resize_test
+        working-directory: asteroids
         run: flutter pub get
         
       - name: build web app
-        working-directory: window_resize_test
+        working-directory: asteroids
         run: flutter build web --web-renderer canvaskit --base-href /flutter_staging/ --release
 
       - name: deploy to gh pages
         uses: JamesIves/github-pages-deploy-action@v4
         with: 
-          folder: window_resize_test/build/web
+          folder: asteroids/build/web
