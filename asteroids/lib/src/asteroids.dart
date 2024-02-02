@@ -26,8 +26,6 @@ const scoreStyle = TextStyle(color: Colors.white,
                              fontFamily: 'Hyperspace');
 final scoreRenderer = TextPaint(style: scoreStyle);
 
-// TODO: create new config file for mobile/smaller screens?
-// (Rather than just having switch statements everywhere)
 class Asteroids extends FlameGame
   with KeyboardEvents, HasCollisionDetection {
 
@@ -75,46 +73,6 @@ class Asteroids extends FlameGame
     */
   }
 
-  void generateRandomAsteroid() {
-    // generate random velocity value
-    // 32, 64, 128, 256 as possible speed
-    int asteroidSpeedScalar = rand.nextInt(4);
-    double asteroidVelocity = math.pow(2, (5 + asteroidSpeedScalar)).toDouble();
-
-    // generate position values
-    Vector2 asteroidPos = Vector2(0, 0);
-    bool isSide = rand.nextBool();
-    if (isSide) {
-      asteroidPos.y = ((rand.nextDouble() * (height / 2)  + (height / 4)));
-    } else {
-      asteroidPos.x = ((rand.nextDouble() * (width / 2)  + (width / 4)));
-    }
-
-    // generate angle
-    final bool isPositiveAngle = rand.nextBool();
-    double asteroidAngle = (rand.nextDouble() * (math.pi / 2)) 
-                              + (math.pi / 4);
-    if (!isPositiveAngle) {  
-      asteroidAngle = -asteroidAngle; 
-    }
-
-    // objType:
-    // enum AsteroidType {asteroidO, asteroidS, asteroidX} 
-    // objSize:
-    // enum AsteroidSize {small, medium, large} 
-    // velocity:
-    // min = 32, max = 256
-    // 2^5 -> 2^8
-    world.add(Asteroid(
-      objType: AsteroidType.values[rand.nextInt(3)],
-      objSize: AsteroidSize.values[rand.nextInt(3)],
-      velocity: asteroidVelocity,
-      position: asteroidPos,
-      angle: asteroidAngle,
-    ));
-    numAsteroids++;
-  }
-
   // layout all the assets to determine if screen sizing is trash or not
   void layoutDebug() {
 
@@ -124,6 +82,7 @@ class Asteroids extends FlameGame
       for (var i = 1; i < 4; i++) {
         asteroidPos.x = (i / 4) * size.x;
         world.add(Asteroid(
+          isMobile: true,
           objType: AsteroidType.values[i - 1],
           objSize: AsteroidSize.values[j - 1],
           velocity: 0,
@@ -171,6 +130,48 @@ class Asteroids extends FlameGame
     }
   }
 
+  void generateRandomAsteroid() {
+    // generate random velocity value
+    // 32, 64, 128, 256 as possible speed
+    int asteroidSpeedScalar = rand.nextInt(4);
+    double asteroidVelocity = math.pow(2, (5 + asteroidSpeedScalar)).toDouble();
+
+    // generate position values
+    Vector2 asteroidPos = Vector2(0, 0);
+    bool isSide = rand.nextBool();
+    if (isSide) {
+      asteroidPos.y = ((rand.nextDouble() * (height / 2)  + (height / 4)));
+    } else {
+      asteroidPos.x = ((rand.nextDouble() * (width / 2)  + (width / 4)));
+    }
+
+    // generate angle
+    final bool isPositiveAngle = rand.nextBool();
+    double asteroidAngle = (rand.nextDouble() * (math.pi / 2)) 
+                              + (math.pi / 4);
+    if (!isPositiveAngle) {  
+      asteroidAngle = -asteroidAngle; 
+    }
+
+    // objType:
+    // enum AsteroidType {asteroidO, asteroidS, asteroidX} 
+    // objSize:
+    // enum AsteroidSize {small, medium, large} 
+    // velocity:
+    // min = 32, max = 256
+    // 2^5 -> 2^8
+    world.add(Asteroid(
+      isMobile: false,
+      objType: AsteroidType.values[rand.nextInt(3)],
+      objSize: AsteroidSize.values[rand.nextInt(3)],
+      velocity: asteroidVelocity,
+      position: asteroidPos,
+      angle: asteroidAngle,
+    ));
+    numAsteroids++;
+  }
+
+
   void animateBackground (bool isFirstRun) {
 
     if (isFirstRun) {
@@ -210,6 +211,7 @@ class Asteroids extends FlameGame
     );
 
     world.add(Asteroid(
+      isMobile: false,
       objType: AsteroidType.asteroidX,
       objSize: AsteroidSize.large,
       velocity: 120.0,
@@ -218,6 +220,7 @@ class Asteroids extends FlameGame
     ));
 
     world.add(Asteroid(
+      isMobile: false,
       objType: AsteroidType.asteroidS,
       objSize: AsteroidSize.large,
       velocity: 120.0,
@@ -226,6 +229,7 @@ class Asteroids extends FlameGame
     ));
 
     world.add(Asteroid(
+      isMobile: false,
       objType: AsteroidType.asteroidO,
       objSize: AsteroidSize.large,
       velocity: 120.0,

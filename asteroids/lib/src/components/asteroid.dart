@@ -1,10 +1,12 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/extensions.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:math';
 
-import '../asteroids.dart';
+//import '../asteroids.dart';
+import '../mobile_asteroids.dart';
 import '../config.dart' as game_settings;
 import '../components/components.dart';
 
@@ -12,7 +14,7 @@ enum AsteroidType {asteroidO, asteroidS, asteroidX}
 enum AsteroidSize {small, medium, large} 
 
 class Asteroid extends PositionComponent 
-  with CollisionCallbacks, HasGameReference<Asteroids> {
+  with CollisionCallbacks, HasGameReference<MobileAsteroids> {
 
   // Rendering
   var _graphicPath = Path();
@@ -23,6 +25,7 @@ class Asteroid extends PositionComponent
     ..color = Colors.white;
 
   Asteroid({
+    required this.isMobile,
     required this.objType,
     required this.objSize,
     required this.velocity,
@@ -32,12 +35,11 @@ class Asteroid extends PositionComponent
       anchor: Anchor.center,
       children: [CircleHitbox(isSolid: true)]
     ) {
-      super.size = mapAsteroidSize();
       _points = mapAsteroidValue();
-      _graphicPath = completePath();
   }
 
   // Core settings
+  bool isMobile;
   AsteroidSize objSize;
   AsteroidType objType;
 
@@ -50,24 +52,46 @@ class Asteroid extends PositionComponent
   // for collisions (when shot)
   List<Asteroid> _asteroidChildren = [];
 
+  @override
+  Future<void> onLoad() async {
+    super.onLoad();
+    super.size = mapAsteroidSize();
+    _graphicPath = completePath();
+  }
 
-  // TODO: should depend on if we're using desktop or not
   Vector2 mapAsteroidSize() {
 
-    switch (objSize) {
-      case AsteroidSize.large:
-        return Vector2(game_settings.largeAsteroidDesktop,
-                       game_settings.largeAsteroidDesktop);
-      case AsteroidSize.medium:
-        return Vector2(game_settings.mediumAsteroidDesktop,
-                       game_settings.mediumAsteroidDesktop);
-      case AsteroidSize.small:
-        return Vector2(game_settings.smallAsteroidDesktop,
-                       game_settings.smallAsteroidDesktop);
-      default:
-        debugPrint("Asteroid size unset!");
-        return Vector2(0, 0);
-    } 
+    if (isMobile) {
+      switch (objSize) {
+        case AsteroidSize.large:
+          return Vector2(game.size.x / game_settings.largeAsteroidMobileScalar,
+                         game.size.x / game_settings.largeAsteroidMobileScalar);
+        case AsteroidSize.medium:
+          return Vector2(game.size.x / game_settings.mediumAsteroidMobileScalar,
+                         game.size.x / game_settings.mediumAsteroidMobileScalar);
+        case AsteroidSize.small:
+          return Vector2(game.size.x / game_settings.smallAsteroidMobileScalar,
+                         game.size.x / game_settings.smallAsteroidMobileScalar);
+        default:
+          debugPrint("Asteroid size unset!");
+          return Vector2(0, 0);
+      } 
+    } else {
+      switch (objSize) {
+        case AsteroidSize.large:
+          return Vector2(game_settings.largeAsteroidDesktop,
+                         game_settings.largeAsteroidDesktop);
+        case AsteroidSize.medium:
+          return Vector2(game_settings.mediumAsteroidDesktop,
+                         game_settings.mediumAsteroidDesktop);
+        case AsteroidSize.small:
+          return Vector2(game_settings.smallAsteroidDesktop,
+                         game_settings.smallAsteroidDesktop);
+        default:
+          debugPrint("Asteroid size unset!");
+          return Vector2(0, 0);
+      } 
+    }
   }
 
   int mapAsteroidValue() {
@@ -277,6 +301,7 @@ class Asteroid extends PositionComponent
         
         _asteroidChildren.add( 
           Asteroid( 
+            isMobile: isMobile,
             objType: objType, 
             objSize: AsteroidSize.medium,
             velocity: velocity,
@@ -287,6 +312,7 @@ class Asteroid extends PositionComponent
 
         _asteroidChildren.add( 
           Asteroid( 
+            isMobile: isMobile,
             objType: objType, 
             objSize: AsteroidSize.medium,
             velocity: velocity,
@@ -308,6 +334,7 @@ class Asteroid extends PositionComponent
         
         _asteroidChildren.add( 
           Asteroid( 
+            isMobile: isMobile,
             objType: objType, 
             objSize: AsteroidSize.small,
             velocity: velocity,
@@ -318,6 +345,7 @@ class Asteroid extends PositionComponent
 
         _asteroidChildren.add( 
           Asteroid( 
+            isMobile: isMobile,
             objType: objType, 
             objSize: AsteroidSize.small,
             velocity: velocity,

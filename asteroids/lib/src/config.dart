@@ -6,14 +6,23 @@ import 'package:flame/game.dart';
 const gameHeight = 200.0;
 const gameWidth = 300.0;
 
-// core gameplay mechanics
+// common gameplay mechanics
 const int respawnTimer = 30;
 const int playerLives = 3;
+
+const int largeAsteroidPoints = 200;
+const int mediumAsteroidPoints = 100;
+const int smallAsteroidPoints = 50;
 
 // TODO: change this into an upper and lower bound instead
 const double asteroidSpeed = 120.0;
 
 // Desktop sizing variants
+// lives tracker
+const double livesWidth = 30;
+const double livesHeight = 42;
+const double livesOffset = 8;
+
 // player 
 const double playerWidthDesktop = 36;
 const double playerHeightDesktop = 60;
@@ -33,23 +42,20 @@ const double largeAsteroidDesktop = 128.0;
 const double mediumAsteroidDesktop = 64.0; 
 const double smallAsteroidDesktop = 32.0; 
 
-const int largeAsteroidPoints = 200;
-const int mediumAsteroidPoints = 100;
-const int smallAsteroidPoints = 50;
+// alien
+// WARN : I pulled these numbers out of my ass
+const alienWidthDesktop = 60;
+const alienHeightDesktop = 36;
 
 // I'm doing powers of 2 here
 // only tested on desktop
 const double asteroidMinVelocity = 32;
 const double asteroidMaxVelocity = 256;
 
-// lives tracker
-// TODO: scale these by device?
-const double livesWidth = 30;
-const double livesHeight = 42;
-const double livesOffset = 8;
+// Mobile sizing variants
+// player
 
-// alien
-// WARN : I pulled these numbers out of my ass
-const alienWidthDesktop = 60;
-const alienHeightDesktop = 36;
-
+// asteroids
+const double largeAsteroidMobileScalar = 8;
+const double mediumAsteroidMobileScalar = 16;
+const double smallAsteroidMobileScalar = 32;
