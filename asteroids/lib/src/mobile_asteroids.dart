@@ -15,11 +15,6 @@ import 'components/components.dart';
 // configuration
 import 'config.dart' as game_settings;
 
-// scoreboard
-const scoreStyle = TextStyle(color: Colors.white, 
-                             fontSize: 48.0, 
-                             fontFamily: 'Hyperspace');
-final scoreRenderer = TextPaint(style: scoreStyle);
 
 class MobileAsteroids extends FlameGame
   with KeyboardEvents, HasCollisionDetection {
@@ -74,6 +69,16 @@ class MobileAsteroids extends FlameGame
       shipType: ShipType.player,
     ));
 
+    
+    // double testFontSize = 48.0; 
+    double testFontSize = 32.0; 
+      
+    // scoreboard
+    TextStyle scoreStyle = TextStyle(color: Colors.white, 
+                                     fontSize: testFontSize, 
+                                     fontFamily: 'Hyperspace');
+    final scoreRenderer = TextPaint(style: scoreStyle);
+
     // score 
     String formattedScore = score.toString().padLeft(4, '0');
     scoreboard = TextComponent(
@@ -97,7 +102,7 @@ class MobileAsteroids extends FlameGame
           position: Vector2(xPos, 
                             game_settings.livesOffset 
                               + (game_settings.livesHeight / 2)),
-          shipType: ShipType.lives,
+          shipType: ShipType.player,
         )
       );
     }
