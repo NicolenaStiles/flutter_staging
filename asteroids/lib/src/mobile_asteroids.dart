@@ -63,11 +63,12 @@ class MobileAsteroids extends FlameGame
       }
     }
 
+    // player's ship
     Vector2 shipPos = Vector2(0, 0);
     shipPos.x = size.x * (1/2);
     shipPos.y = size.y * (4/5);
-    // player's ship
     world.add(Player(
+      isMobile: true,
       key: ComponentKey.named('player'),
       position: shipPos,
       shipType: ShipType.player,
@@ -91,6 +92,7 @@ class MobileAsteroids extends FlameGame
                                  + (game_settings.livesWidth / 2));
       world.add(
         Player(
+          isMobile: true,
           key: ComponentKey.named(lifeKey),
           position: Vector2(xPos, 
                             game_settings.livesOffset 
