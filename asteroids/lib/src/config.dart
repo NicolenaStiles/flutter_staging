@@ -27,12 +27,13 @@ class GameCfg {
 
   double livesWidth = 30;
   double livesHeight = 42;
-  double livesOffset = 8;
+  double livesOffset = 6;
 
   double fontSize = 48.0;
 
   // mobile scalars
   static double playerShipMobileScalar = 16;
+  static double livesMobileScalar = 16;
 
   // asteroids
   
@@ -48,7 +49,7 @@ class GameCfg {
     playerHeight = shipHeight;
 
     // lives display height/width
-    shipHeight = (screenY / playerShipMobileScalar);
+    shipHeight = (screenY / livesMobileScalar);
     shipWidth = (livesWidth * shipHeight) / livesHeight;
     double shipOffset = shipWidth / 2; // TODO: check if this makes any sense
     livesWidth = shipWidth;
