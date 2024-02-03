@@ -33,7 +33,7 @@ class GameCfg {
 
   // mobile scalars
   static double playerShipMobileScalar = 16;
-  static double livesMobileScalar = 16;
+  static double livesMobileScalar = 32;
 
   // asteroids
   
