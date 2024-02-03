@@ -357,6 +357,16 @@ class Asteroids extends FlameGame
     tapTracker2.text = 'pan end';
   }
 
+  @override
+  void onTapDown(TapDownInfo info) {
+    super.onTapDown(info);
+    if (_playState == PlayState.background) {
+      startGame();
+    }
+    tapPosition = info.eventPosition.global.toString();
+    tapTracker2.text = 'tap down';
+  }
+
   /*
   @override
   void onLongPressStart(LongPressStartInfo info) {
