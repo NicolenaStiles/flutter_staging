@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'dart:math';
 
-//import '../asteroids.dart';
-import '../mobile_asteroids.dart';
+import '../asteroids.dart';
+// import '../mobile_asteroids.dart';
 import '../config.dart' as game_settings;
 import '../components/components.dart';
 
@@ -14,7 +14,7 @@ enum AsteroidType {asteroidO, asteroidS, asteroidX}
 enum AsteroidSize {small, medium, large} 
 
 class Asteroid extends PositionComponent 
-  with CollisionCallbacks, HasGameReference<MobileAsteroids> {
+  with CollisionCallbacks, HasGameReference<Asteroids> {
 
   // Core settings
   AsteroidSize objSize;

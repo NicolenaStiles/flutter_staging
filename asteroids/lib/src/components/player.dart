@@ -1,20 +1,21 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 
 import 'package:flutter/material.dart';
 
 import 'dart:math';
 
-//import '../asteroids.dart';
-import '../mobile_asteroids.dart';
+import '../asteroids.dart';
+//import '../mobile_asteroids.dart';
 import '../config.dart' as game_settings;
 import '../components/components.dart';
 
 enum ShipType {player, lives}
 
 class Player extends PositionComponent 
-  with CollisionCallbacks, HasGameRef<MobileAsteroids> {
+  with DragCallbacks, CollisionCallbacks, HasGameRef<Asteroids> {
 
   // Rendering
   var _graphicPath = Path();
@@ -261,6 +262,15 @@ class Player extends PositionComponent
       _playerDirection = Vector2(0,0);
     }
   }
+
+  // TODO: touchscreen controls?
+  /*
+  @override
+  void onDragUpdate(DragUpdateEvent event) {
+    super.onDragUpdate(event);
+    lookAt(event.localDelta);
+  }
+  */
 
   @override
   void update(double dt) {

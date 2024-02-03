@@ -16,6 +16,10 @@ import 'components/components.dart';
 
 // configuration
 import 'config.dart' as game_settings;
+game_settings.GameCfg testCfg = game_settings.GameCfg.desktop();
+
+// WARN: Debug only!
+String tapPosition = '';
 
 // enum PlayState {background, welcome, play, gameOver, won}
 enum PlayState { debug, background, play }
@@ -27,7 +31,9 @@ const scoreStyle = TextStyle(color: Colors.white,
 final scoreRenderer = TextPaint(style: scoreStyle);
 
 class Asteroids extends FlameGame
-  with KeyboardEvents, HasCollisionDetection {
+  with TapDetector, KeyboardEvents, HasCollisionDetection {
+  bool isMobile;
+  Asteroids(this.isMobile);
 
   final rand = math.Random();
   double get width => size.x;
@@ -63,9 +69,19 @@ class Asteroids extends FlameGame
 
     camera.viewfinder.anchor = Anchor.topLeft;
 
-    playState = PlayState.debug;
-    // WARN: debug only!
-    layoutDebug();
+    // populate config object with appropriate settings
+    if (!isMobile) {
+      testCfg = game_settings.GameCfg.desktop();
+    } else {
+      testCfg = game_settings.GameCfg.mobile(width, height);
+    }
+
+    debugMode = true;
+
+    playState = PlayState.background;
+    animateBackground(true);
+    
+    // layoutDebug();
 
     /*
     playState = PlayState.background;
@@ -75,32 +91,53 @@ class Asteroids extends FlameGame
 
   // layout all the assets to determine if screen sizing is trash or not
   void layoutDebug() {
-
+    
+    // player's ship
+    Vector2 shipPos = Vector2(0, 0);
+    shipPos.x = size.x * (1/2);
+    shipPos.y = size.y * (4/5);
+    world.add(Player(
+      key: ComponentKey.named('player'),
+      position: shipPos,
+      size : Vector2(testCfg.playerWidth, testCfg.playerHeight),
+      shipType: ShipType.player,
+    ));
+    
+    // asteroids
     for (var j = 3; j > 0; j--) {
       Vector2 asteroidPos = Vector2(0, 0);
       asteroidPos.y = (j / 5) * size.y;
       for (var i = 1; i < 4; i++) {
         asteroidPos.x = (i / 4) * size.x;
+        Vector2 asteroidSize = Vector2(0, 0);
+        switch (AsteroidSize.values[j - 1]) {
+          case AsteroidSize.large:
+           asteroidSize.x = testCfg.largeAsteroidSize; 
+           asteroidSize.y = testCfg.largeAsteroidSize; 
+          case AsteroidSize.medium:
+           asteroidSize.x = testCfg.mediumAsteroidSize; 
+           asteroidSize.y = testCfg.mediumAsteroidSize; 
+          case AsteroidSize.small:
+           asteroidSize.x = testCfg.smallAsteroidSize; 
+           asteroidSize.y = testCfg.smallAsteroidSize; 
+        }
         world.add(Asteroid(
-          isMobile: true,
           objType: AsteroidType.values[i - 1],
           objSize: AsteroidSize.values[j - 1],
           velocity: 0,
+          size: asteroidSize,
           position: asteroidPos, 
           angle: 0,
         ));
       }
     }
 
-    Vector2 shipPos = Vector2(0, 0);
-    shipPos.x = size.x * (1/2);
-    shipPos.y = size.y * (4/5);
-    // player's ship
-    world.add(Player(
-      key: ComponentKey.named('player'),
-      position: shipPos,
-      shipType: ShipType.player,
-    ));
+    // HUD stuff: scoreboard and lives tracker
+    // scoreboard
+    TextStyle scoreStyle = TextStyle(color: Colors.white, 
+                                     fontSize: testCfg.fontSize, 
+                                     fontFamily: 'Hyperspace');
+    final scoreRenderer = TextPaint(style: scoreStyle);
 
     // score 
     String formattedScore = score.toString().padLeft(4, '0');
@@ -112,18 +149,18 @@ class Asteroids extends FlameGame
         position: Vector2(0,0));
     world.add(scoreboard);
 
-    // lives
+    // lives tracker
     for (int n = 0; n < lives; n++) {
       String lifeKey = "life$n";
-      double xPos = canvasSize.x - (((n + 1) * game_settings.livesOffset) 
-                                 + (n * game_settings.livesWidth) 
-                                 + (game_settings.livesWidth / 2));
+      double xPos = width - (((n + 1) * testCfg.livesOffset) 
+                                 + (n * testCfg.livesWidth) 
+                                 + (testCfg.livesWidth / 2));
+      double yPos = testCfg.livesOffset + (testCfg.livesHeight / 2);
       world.add(
         Player(
           key: ComponentKey.named(lifeKey),
-          position: Vector2(xPos, 
-                            game_settings.livesOffset 
-                              + (game_settings.livesHeight / 2)),
+          position: Vector2(xPos, yPos),
+          size : Vector2(testCfg.livesWidth, testCfg.livesHeight),
           shipType: ShipType.lives,
         )
       );
@@ -160,11 +197,24 @@ class Asteroids extends FlameGame
     // velocity:
     // min = 32, max = 256
     // 2^5 -> 2^8
+    Vector2 asteroidSize = Vector2(0, 0);
+    AsteroidSize asteroidSizeEnum = AsteroidSize.values[rand.nextInt(3)]; 
+    switch (asteroidSizeEnum) {
+      case AsteroidSize.large:
+       asteroidSize.x = testCfg.largeAsteroidSize; 
+       asteroidSize.y = testCfg.largeAsteroidSize; 
+      case AsteroidSize.medium:
+       asteroidSize.x = testCfg.mediumAsteroidSize; 
+       asteroidSize.y = testCfg.mediumAsteroidSize; 
+      case AsteroidSize.small:
+       asteroidSize.x = testCfg.smallAsteroidSize; 
+       asteroidSize.y = testCfg.smallAsteroidSize; 
+    }
     world.add(Asteroid(
-      isMobile: false,
       objType: AsteroidType.values[rand.nextInt(3)],
-      objSize: AsteroidSize.values[rand.nextInt(3)],
+      objSize: asteroidSizeEnum,
       velocity: asteroidVelocity,
+      size: asteroidSize,
       position: asteroidPos,
       angle: asteroidAngle,
     ));
@@ -203,43 +253,31 @@ class Asteroids extends FlameGame
 
     // setting up world constants
     // WARN: DEBUG ONLY
+    /*
     world.add(
       FpsTextComponent(
         position: Vector2(0, canvasSize.y),
         anchor: Anchor.bottomLeft,
       )
     );
+    */
 
-    world.add(Asteroid(
-      isMobile: false,
-      objType: AsteroidType.asteroidX,
-      objSize: AsteroidSize.large,
-      velocity: 120.0,
-      position: size * (1/4), 
-      angle: 0
-    ));
+    world.add(
+      TextComponent(
+        key: ComponentKey.named('tap'), 
+        text: tapPosition,
+        position: Vector2(0, canvasSize.y),
+        anchor: Anchor.bottomLeft)
+    );
 
-    world.add(Asteroid(
-      isMobile: false,
-      objType: AsteroidType.asteroidS,
-      objSize: AsteroidSize.large,
-      velocity: 120.0,
-      position: size * (3/4), 
-      angle: 0
-    ));
-
-    world.add(Asteroid(
-      isMobile: false,
-      objType: AsteroidType.asteroidO,
-      objSize: AsteroidSize.large,
-      velocity: 120.0,
-      position: size * (2/4), 
-      angle: 0
-    ));
-
+    // player's ship
+    Vector2 shipPos = Vector2(0, 0);
+    shipPos.x = size.x * (1/2);
+    shipPos.y = size.y * (4/5);
     world.add(Player(
       key: ComponentKey.named('player'),
-      position: size / 3, 
+      position: shipPos,
+      size : Vector2(testCfg.playerWidth, testCfg.playerHeight),
       shipType: ShipType.player,
     ));
 
@@ -253,18 +291,18 @@ class Asteroids extends FlameGame
         position: Vector2(0,0));
     world.add(scoreboard);
 
-    // display lives
+    // lives tracker
     for (int n = 0; n < lives; n++) {
       String lifeKey = "life$n";
-      double xPos = canvasSize.x - (((n + 1) * game_settings.livesOffset) 
-                                 + (n * game_settings.livesWidth) 
-                                 + (game_settings.livesWidth / 2));
+      double xPos = width - (((n + 1) * testCfg.livesOffset) 
+                                 + (n * testCfg.livesWidth) 
+                                 + (testCfg.livesWidth / 2));
+      double yPos = testCfg.livesOffset + (testCfg.livesHeight / 2);
       world.add(
         Player(
           key: ComponentKey.named(lifeKey),
-          position: Vector2(xPos, 
-                            game_settings.livesOffset 
-                              + (game_settings.livesHeight / 2)),
+          position: Vector2(xPos, yPos),
+          size : Vector2(testCfg.livesWidth, testCfg.livesHeight),
           shipType: ShipType.lives,
         )
       );
@@ -289,6 +327,17 @@ class Asteroids extends FlameGame
     }
   }
 
+  @override
+  void onTapDown(TapDownInfo info) {
+    super.onTapDown(info);
+    tapPosition = info.eventPosition.global.toString();
+  }
+
+  @override
+  void onTapUp(TapUpInfo info) {
+    super.onTapUp(info);
+    tapPosition = info.eventPosition.global.toString();
+  }
 
   // TODO: Implement hyperdrive!
   @override
@@ -343,7 +392,6 @@ class Asteroids extends FlameGame
           //world.children.query<Player>().first.fireShot = false;
       }
     }
-
     return KeyEventResult.handled;
   }
 
