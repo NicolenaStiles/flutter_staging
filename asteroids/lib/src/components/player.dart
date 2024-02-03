@@ -26,53 +26,23 @@ class Player extends PositionComponent
 
   // TODO: bespoke hitbox?
   Player({
-    required this.isMobile,
     required this.shipType,
     required super.key,
     required super.position,
+    required super.size,
   }) : super ( 
         anchor: Anchor.center,
         children: [RectangleHitbox(isSolid: true)]
-  );
+  ) {
+        _graphicPath = completePath();
+  }
 
-  bool isMobile;
   ShipType shipType;
 
   @override 
   Future<void> onLoad() async {
     super.onLoad();
-    super.size = mapShipSize();
     _graphicPath = completePath();
-  }
-
-  Vector2 mapShipSize() {
-    if (isMobile) {
-      double shipHeight = (game.size.y / game_settings.mediumAsteroidMobileScalar);
-      double shipWidth = (36 * shipHeight) / 60;
-      switch (shipType) {
-        case ShipType.player:
-          return Vector2(shipWidth,
-                         shipHeight);
-        case ShipType.lives:
-          return Vector2(game_settings.livesWidth,
-                         game_settings.livesHeight);
-        default:
-          debugPrint("Ship size unset!");
-          return Vector2(0, 0);
-      }
-    } else {
-      switch (shipType) {
-        case ShipType.player:
-          return Vector2(game_settings.playerWidthDesktop,
-                         game_settings.playerHeightDesktop);
-        case ShipType.lives:
-          return Vector2(game_settings.livesWidth,
-                         game_settings.livesHeight);
-        default:
-          debugPrint("Ship size unset!");
-          return Vector2(0, 0);
-      }
-    }
   }
 
   // movement input

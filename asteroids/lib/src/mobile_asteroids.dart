@@ -15,16 +15,19 @@ import 'components/components.dart';
 // configuration
 import 'config.dart' as game_settings;
 
+game_settings.GameCfg testCfg = game_settings.GameCfg.desktop();
 
 class MobileAsteroids extends FlameGame
   with KeyboardEvents, HasCollisionDetection {
+  bool isMobile;
+  MobileAsteroids(this.isMobile);
 
   double get width => size.x;
   double get height => size.y;
 
   // game stats
   int score = 0;
-  int lives = game_settings.playerLives;
+  int lives = 0;
 
   // displaying score
   static TextComponent scoreboard = TextComponent();
@@ -35,11 +38,67 @@ class MobileAsteroids extends FlameGame
 
     camera.viewfinder.anchor = Anchor.topLeft;
 
-    layoutDebug();
+    // populate config object with appropriate settings
+    if (!isMobile) {
+      testCfg = game_settings.GameCfg.desktop();
+    } else {
+      testCfg = game_settings.GameCfg.mobile(width, height);
+    }
 
+    layoutDebug();
+  }
+
+  void layoutDebug() {
+    // HUD stuff: scoreboard and lives tracker
+    
+    // player's ship
+    Vector2 shipPos = Vector2(0, 0);
+    shipPos.x = size.x * (1/2);
+    shipPos.y = size.y * (4/5);
+    world.add(Player(
+      key: ComponentKey.named('player'),
+      position: shipPos,
+      size : Vector2(testCfg.playerWidth, testCfg.playerHeight),
+      shipType: ShipType.player,
+    ));
+
+    // scoreboard
+    TextStyle scoreStyle = TextStyle(color: Colors.white, 
+                                     fontSize: testCfg.fontSize, 
+                                     fontFamily: 'Hyperspace');
+    final scoreRenderer = TextPaint(style: scoreStyle);
+
+    // score 
+    String formattedScore = score.toString().padLeft(4, '0');
+    scoreboard = TextComponent(
+        key: ComponentKey.named('scoreboard'),
+        text: formattedScore, 
+        textRenderer: scoreRenderer,
+        anchor: Anchor.topLeft,
+        position: Vector2(0,0));
+    world.add(scoreboard);
+
+    // lives tracker
+    for (int n = 0; n < lives; n++) {
+      String lifeKey = "life$n";
+      double xPos = width - (((n + 1) * testCfg.livesOffset) 
+                                 + (n * testCfg.livesWidth) 
+                                 + (testCfg.livesWidth / 2));
+      world.add(
+        Player(
+          key: ComponentKey.named(lifeKey),
+          position: Vector2(xPos, 
+                            testCfg.livesOffset 
+                            + (testCfg.livesHeight / 2)),
+          size : Vector2(testCfg.livesWidth, testCfg.livesHeight),
+          shipType: ShipType.lives,
+        )
+      );
+    }
   }
 
   // layout all the assets to determine if screen sizing is trash or not
+  /*
   void layoutDebug() {
 
     for (var j = 3; j > 0; j--) {
@@ -68,11 +127,14 @@ class MobileAsteroids extends FlameGame
       position: shipPos,
       shipType: ShipType.player,
     ));
-
     
     // double testFontSize = 48.0; 
     double testFontSize = 32.0; 
       
+    // TODO: you were here, figure out what to do with
+    // scoreboard and lives tracker for HUD
+    // TODO: break out HUD init into seperate function?
+
     // scoreboard
     TextStyle scoreStyle = TextStyle(color: Colors.white, 
                                      fontSize: testFontSize, 
@@ -102,9 +164,10 @@ class MobileAsteroids extends FlameGame
           position: Vector2(xPos, 
                             game_settings.livesOffset 
                               + (game_settings.livesHeight / 2)),
-          shipType: ShipType.player,
+          shipType: ShipType.lives,
         )
       );
     }
   }
+  */
 }
