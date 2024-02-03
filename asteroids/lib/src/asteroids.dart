@@ -31,7 +31,7 @@ const scoreStyle = TextStyle(color: Colors.white,
 final scoreRenderer = TextPaint(style: scoreStyle);
 
 class Asteroids extends FlameGame
-  with LongPressDetector, TapDetector, KeyboardEvents, HasCollisionDetection {
+  with PanDetector, LongPressDetector, TapDetector, KeyboardEvents, HasCollisionDetection {
   bool isMobile;
   Asteroids(this.isMobile);
 
@@ -278,7 +278,7 @@ class Asteroids extends FlameGame
                     anchor: Anchor.bottomCenter);
     world.add(tapTracker2);
 
-    world.add(DragTest(radius: 10, position: size / 2));
+    world.add(DragTest(radius: 100, position: size / 2));
 
     // player's ship
     Vector2 shipPos = Vector2(0, 0);
@@ -338,6 +338,27 @@ class Asteroids extends FlameGame
   }
 
   @override
+  void onPanUpdate(DragUpdateInfo info) {
+    super.onPanUpdate(info);
+    tapPosition = info.eventPosition.global.toString();
+    tapTracker2.text = 'pan update';
+  }
+
+  @override
+  void onPanStart(DragStartInfo info) {
+    super.onPanStart(info);
+    tapPosition = info.eventPosition.global.toString();
+    tapTracker2.text = 'pan start';
+  }
+
+  @override
+  void onPanEnd(DragEndInfo info) {
+    super.onPanEnd(info);
+    tapTracker2.text = 'pan end';
+  }
+
+  /*
+  @override
   void onLongPressStart(LongPressStartInfo info) {
     super.onLongPressStart(info);
     tapTracker.text = info.eventPosition.global.toString();
@@ -374,6 +395,8 @@ class Asteroids extends FlameGame
     tapPosition = info.eventPosition.global.toString();
     tapTracker2.text = 'tap up';
   }
+
+  */
 
   // TODO: Implement hyperdrive!
   @override

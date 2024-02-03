@@ -21,8 +21,8 @@ class DragTest extends PositionComponent
   }
 
  final _paint = Paint()
-    ..color = const Color(0xff1e6091)
-    ..style = PaintingStyle.fill;
+    ..color = const Color.fromARGB(255, 255, 0, 0)
+    ..style = PaintingStyle.stroke;
 
   @override
   void render(Canvas canvas) {
