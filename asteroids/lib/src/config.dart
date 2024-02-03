@@ -26,7 +26,7 @@ class GameCfg {
   int playerMaxSpeed = 400;                       // untested
 
   double livesWidth = 30;
-  double livesHeight = 42;
+  double livesHeight = 50;
   double livesOffset = 6;
 
   double fontSize = 48.0;
