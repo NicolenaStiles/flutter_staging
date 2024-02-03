@@ -45,6 +45,9 @@ class MobileAsteroids extends FlameGame
       testCfg = game_settings.GameCfg.mobile(width, height);
     }
 
+    // be sure to set defaults here first!!
+    lives = testCfg.playerLives;
+
     layoutDebug();
   }
 
@@ -84,12 +87,11 @@ class MobileAsteroids extends FlameGame
       double xPos = width - (((n + 1) * testCfg.livesOffset) 
                                  + (n * testCfg.livesWidth) 
                                  + (testCfg.livesWidth / 2));
+      double yPos = testCfg.livesOffset + (testCfg.livesHeight / 2);
       world.add(
         Player(
           key: ComponentKey.named(lifeKey),
-          position: Vector2(xPos, 
-                            testCfg.livesOffset 
-                            + (testCfg.livesHeight / 2)),
+          position: Vector2(xPos, yPos),
           size : Vector2(testCfg.livesWidth, testCfg.livesHeight),
           shipType: ShipType.lives,
         )

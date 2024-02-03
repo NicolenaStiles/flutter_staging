@@ -236,6 +236,9 @@ class Player extends PositionComponent
     super.onCollisionStart(intersectionPoints, other);
     // if not invincible
     // start animation?
+    if (shipType == ShipType.lives) {
+      return;
+    }
   }
 
   @override

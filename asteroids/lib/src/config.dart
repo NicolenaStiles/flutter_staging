@@ -7,9 +7,9 @@ class GameCfg {
   double screenY = 0;
 
   // common
-  static const int respawnTimer = 30;
-  static const int playerLives = 3;
-
+  int respawnTimer = 30; 
+  int playerLives = 3;
+  
   static const int largeAsteroidPoints = 200;
   static const int mediumAsteroidPoints = 100;
   static const int smallAsteroidPoints = 50;
@@ -56,7 +56,7 @@ class GameCfg {
     livesOffset = shipOffset;
 
     // font size for scoreboard
-    fontSize = screenY / 14;
+    fontSize = screenY / 16;
   }
 }
   const double largeAsteroidMobileScalar = 8;
