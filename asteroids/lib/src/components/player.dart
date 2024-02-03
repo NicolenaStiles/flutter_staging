@@ -28,8 +28,8 @@ class Player extends PositionComponent
   Player({
     required this.shipType,
     required super.key,
-    required super.position,
     required super.size,
+    required super.position,
   }) : super ( 
         anchor: Anchor.center,
         children: [RectangleHitbox(isSolid: true)]

@@ -1,18 +1,18 @@
 import 'package:flame/game.dart';
 
+// core gameplay settings
+// lives outside of platform-related stuff
+const int respawnTimer = 30; 
+const int playerLives = 3;
+const int largeAsteroidPoints = 200;
+const int mediumAsteroidPoints = 100;
+const int smallAsteroidPoints = 50;
+
 class GameCfg {
 
   // (optional) arguments
   double screenX = 0;
   double screenY = 0;
-
-  // common
-  int respawnTimer = 30; 
-  int playerLives = 3;
-  
-  static const int largeAsteroidPoints = 200;
-  static const int mediumAsteroidPoints = 100;
-  static const int smallAsteroidPoints = 50;
 
   // TODO: change this into an upper and lower bound instead
   static double asteroidSpeed = 120.0;
@@ -31,12 +31,17 @@ class GameCfg {
 
   double fontSize = 48.0;
 
-  // mobile scalars
-  static double playerShipMobileScalar = 16;
-  static double livesMobileScalar = 32;
+  double largeAsteroidSize = 128.0; 
+  double mediumAsteroidSize = 64.0; 
+  double smallAsteroidSize = 32.0; 
 
-  // asteroids
-  
+  // mobile scalars
+  static const double playerShipMobileScalar = 16;
+  static const double livesMobileScalar = 24;
+  static const double largeAsteroidMobileScalar = 8;
+  static const double mediumAsteroidMobileScalar = 16;
+  static const double smallAsteroidMobileScalar = 32;
+
   // Desktop constructor
   GameCfg.desktop();
 
@@ -58,32 +63,27 @@ class GameCfg {
 
     // font size for scoreboard
     fontSize = screenY / 16;
+
+    // asteroids settings
+    double largeAsteroidMobileSize = screenX / largeAsteroidMobileScalar;
+    double mediumAsteroidMobileSize = screenX / mediumAsteroidMobileScalar;
+    double smallAsteroidMobileSize = screenX / smallAsteroidMobileScalar;
+    largeAsteroidSize = largeAsteroidMobileSize;
+    mediumAsteroidSize = mediumAsteroidMobileSize;
+    smallAsteroidSize = smallAsteroidMobileSize;
   }
 }
-  const double largeAsteroidMobileScalar = 8;
-  const double mediumAsteroidMobileScalar = 16;
-  const double smallAsteroidMobileScalar = 32;
 
-   const int largeAsteroidPoints = 200;
-   const int mediumAsteroidPoints = 100;
-   const int smallAsteroidPoints = 50;
+// TODO: change this into an upper and lower bound instead
+ double asteroidSpeed = 120.0;
 
-  // TODO: change this into an upper and lower bound instead
-   double asteroidSpeed = 120.0;
+double livesWidth = 30;
+double livesHeight = 42;
+double livesOffset = 8;
 
-  // shared
-  double playerWidth = 36;
-  double playerHeight = 60;
+// mobile scalars
+ double playerShipMobileScalar = 16;
 
-  double livesWidth = 30;
-  double livesHeight = 42;
-  double livesOffset = 8;
-
-  // mobile scalars
-   double playerShipMobileScalar = 16;
-
-const int respawnTimer = 30;
-const int playerLives = 3;
 
 // player settings
 double playerRotationSpeed = 4; 
@@ -96,10 +96,6 @@ const double shotSpeed = 600;        // how fast bullets go
 const double shotTimer = 100;        // how long bullets live
 const double shotCooldown = 64;      // how long until shoot bullets
 
-// asteroids
-const double largeAsteroidDesktop = 128.0; 
-const double mediumAsteroidDesktop = 64.0; 
-const double smallAsteroidDesktop = 32.0; 
 
 // alien
 // WARN : I pulled these numbers out of my ass
@@ -110,4 +106,3 @@ const alienHeightDesktop = 36;
 // only tested on desktop
 const double asteroidMinVelocity = 32;
 const double asteroidMaxVelocity = 256;
-

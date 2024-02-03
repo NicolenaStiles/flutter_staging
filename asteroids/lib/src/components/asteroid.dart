@@ -16,30 +16,7 @@ enum AsteroidSize {small, medium, large}
 class Asteroid extends PositionComponent 
   with CollisionCallbacks, HasGameReference<MobileAsteroids> {
 
-  // Rendering
-  var _graphicPath = Path();
-  List<List<double>> _verticies = [];
-  final _paint = Paint()
-    ..style = PaintingStyle.stroke
-    ..strokeWidth = 2.0
-    ..color = Colors.white;
-
-  Asteroid({
-    required this.isMobile,
-    required this.objType,
-    required this.objSize,
-    required this.velocity,
-    required super.position,
-    required super.angle,
-  }) : super(
-      anchor: Anchor.center,
-      children: [CircleHitbox(isSolid: true)]
-    ) {
-      _points = mapAsteroidValue();
-  }
-
   // Core settings
-  bool isMobile;
   AsteroidSize objSize;
   AsteroidType objType;
 
@@ -52,46 +29,32 @@ class Asteroid extends PositionComponent
   // for collisions (when shot)
   List<Asteroid> _asteroidChildren = [];
 
+  // Rendering
+  var _graphicPath = Path();
+  List<List<double>> _verticies = [];
+  final _paint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 2.0
+    ..color = Colors.white;
+
+  Asteroid({
+    required this.objType,
+    required this.objSize,
+    required this.velocity,
+    required super.size,
+    required super.position,
+    required super.angle,
+  }) : super(
+      anchor: Anchor.center,
+      children: [CircleHitbox(isSolid: true)]
+    ) {
+      _points = mapAsteroidValue();
+  }
+
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    super.size = mapAsteroidSize();
     _graphicPath = completePath();
-  }
-
-  Vector2 mapAsteroidSize() {
-
-    if (isMobile) {
-      switch (objSize) {
-        case AsteroidSize.large:
-          return Vector2(game.size.x / game_settings.largeAsteroidMobileScalar,
-                         game.size.x / game_settings.largeAsteroidMobileScalar);
-        case AsteroidSize.medium:
-          return Vector2(game.size.x / game_settings.mediumAsteroidMobileScalar,
-                         game.size.x / game_settings.mediumAsteroidMobileScalar);
-        case AsteroidSize.small:
-          return Vector2(game.size.x / game_settings.smallAsteroidMobileScalar,
-                         game.size.x / game_settings.smallAsteroidMobileScalar);
-        default:
-          debugPrint("Asteroid size unset!");
-          return Vector2(0, 0);
-      } 
-    } else {
-      switch (objSize) {
-        case AsteroidSize.large:
-          return Vector2(game_settings.largeAsteroidDesktop,
-                         game_settings.largeAsteroidDesktop);
-        case AsteroidSize.medium:
-          return Vector2(game_settings.mediumAsteroidDesktop,
-                         game_settings.mediumAsteroidDesktop);
-        case AsteroidSize.small:
-          return Vector2(game_settings.smallAsteroidDesktop,
-                         game_settings.smallAsteroidDesktop);
-        default:
-          debugPrint("Asteroid size unset!");
-          return Vector2(0, 0);
-      } 
-    }
   }
 
   int mapAsteroidValue() {
@@ -301,10 +264,10 @@ class Asteroid extends PositionComponent
         
         _asteroidChildren.add( 
           Asteroid( 
-            isMobile: isMobile,
             objType: objType, 
             objSize: AsteroidSize.medium,
             velocity: velocity,
+            size: size / 2,
             position: Vector2(newXA, newYA),
             angle: angle
           )
@@ -312,10 +275,10 @@ class Asteroid extends PositionComponent
 
         _asteroidChildren.add( 
           Asteroid( 
-            isMobile: isMobile,
             objType: objType, 
             objSize: AsteroidSize.medium,
             velocity: velocity,
+            size: size / 2,
             position: Vector2(newXB, newYB),
             angle: angle - (pi / 4)
           )
@@ -334,10 +297,10 @@ class Asteroid extends PositionComponent
         
         _asteroidChildren.add( 
           Asteroid( 
-            isMobile: isMobile,
             objType: objType, 
             objSize: AsteroidSize.small,
             velocity: velocity,
+            size: size / 2,
             position: Vector2(newXA, newYA),
             angle: angle
           )
@@ -345,10 +308,10 @@ class Asteroid extends PositionComponent
 
         _asteroidChildren.add( 
           Asteroid( 
-            isMobile: isMobile,
             objType: objType, 
             objSize: AsteroidSize.small,
             velocity: velocity,
+            size: size / 2,
             position: Vector2(newXB, newYB),
             angle: angle - (pi / 4)
           )
