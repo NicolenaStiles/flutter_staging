@@ -6,7 +6,6 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
-import 'package:flutter/gestures.dart';
 
 // general flutter packages
 import 'package:flutter/material.dart';
@@ -255,7 +254,6 @@ class Asteroids extends FlameGame
     lives = game_settings.playerLives;
 
     // setting up world constants
-    // WARN: DEBUG ONLY
     /*
     world.add(
       FpsTextComponent(
@@ -265,6 +263,7 @@ class Asteroids extends FlameGame
     );
     */
 
+    // WARN: DEBUG ONLY
     tapTracker = TextComponent(
                     key: ComponentKey.named('tap'), 
                     text: '',
@@ -278,6 +277,8 @@ class Asteroids extends FlameGame
                     position: Vector2(canvasSize.x / 2, canvasSize.y),
                     anchor: Anchor.bottomCenter);
     world.add(tapTracker2);
+
+    world.add(DragTest(radius: 10, position: size / 2));
 
     // player's ship
     Vector2 shipPos = Vector2(0, 0);

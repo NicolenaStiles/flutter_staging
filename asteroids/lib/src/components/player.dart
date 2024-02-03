@@ -1,6 +1,5 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ import '../components/components.dart';
 enum ShipType {player, lives}
 
 class Player extends PositionComponent 
-  with DragCallbacks, CollisionCallbacks, HasGameRef<Asteroids> {
+  with CollisionCallbacks, HasGameRef<Asteroids> {
 
   // Rendering
   var _graphicPath = Path();
