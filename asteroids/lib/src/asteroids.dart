@@ -6,6 +6,7 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
+import 'package:flutter/gestures.dart';
 
 // general flutter packages
 import 'package:flutter/material.dart';
@@ -47,6 +48,7 @@ class Asteroids extends FlameGame
   // displaying score
   static TextComponent scoreboard = TextComponent();
   static TextComponent tapTracker = TextComponent();
+  static TextComponent tapTracker2 = TextComponent();
 
   // timer things
   late Timer countdown;
@@ -268,8 +270,14 @@ class Asteroids extends FlameGame
                     text: '',
                     position: Vector2(0, canvasSize.y),
                     anchor: Anchor.bottomLeft);
-
     world.add(tapTracker);
+
+    tapTracker2 = TextComponent(
+                    key: ComponentKey.named('tap2'), 
+                    text: '',
+                    position: Vector2(0, canvasSize.y),
+                    anchor: Anchor.bottomRight);
+    world.add(tapTracker2);
 
     // player's ship
     Vector2 shipPos = Vector2(0, 0);
@@ -332,18 +340,21 @@ class Asteroids extends FlameGame
   void onLongPressStart(LongPressStartInfo info) {
     super.onLongPressStart(info);
     tapTracker.text = info.eventPosition.global.toString();
+    tapTracker2.text = 'long press start';
   }
 
   @override
     void onLongPressMoveUpdate(LongPressMoveUpdateInfo info) {
       super.onLongPressMoveUpdate(info);
       tapTracker.text = info.eventPosition.global.toString();
+      tapTracker2.text = 'long press move update';
     }
 
   @override
   void onLongPressEnd(LongPressEndInfo info) {
     super.onLongPressEnd(info);
     tapTracker.text = info.eventPosition.global.toString();
+    tapTracker2.text = 'long press end';
   }
 
   @override
@@ -352,13 +363,15 @@ class Asteroids extends FlameGame
     if (_playState == PlayState.background) {
       startGame();
     }
-    //tapPosition = info.eventPosition.global.toString();
+    tapPosition = info.eventPosition.global.toString();
+    tapTracker2.text = 'tap down';
   }
 
   @override
   void onTapUp(TapUpInfo info) {
     super.onTapUp(info);
-    //tapPosition = info.eventPosition.global.toString();
+    tapPosition = info.eventPosition.global.toString();
+    tapTracker2.text = 'tap up';
   }
 
   // TODO: Implement hyperdrive!
