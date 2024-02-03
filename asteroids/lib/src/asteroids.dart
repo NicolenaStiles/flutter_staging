@@ -46,6 +46,7 @@ class Asteroids extends FlameGame
  
   // displaying score
   static TextComponent scoreboard = TextComponent();
+  static TextComponent tapTracker = TextComponent();
 
   // timer things
   late Timer countdown;
@@ -262,13 +263,13 @@ class Asteroids extends FlameGame
     );
     */
 
-    world.add(
-      TextComponent(
-        key: ComponentKey.named('tap'), 
-        text: tapPosition,
-        position: Vector2(0, canvasSize.y),
-        anchor: Anchor.bottomLeft)
-    );
+    tapTracker = TextComponent(
+                    key: ComponentKey.named('tap'), 
+                    text: '',
+                    position: Vector2(0, canvasSize.y),
+                    anchor: Anchor.bottomLeft);
+
+    world.add(tapTracker);
 
     // player's ship
     Vector2 shipPos = Vector2(0, 0);
@@ -333,7 +334,7 @@ class Asteroids extends FlameGame
     if (_playState == PlayState.background) {
       startGame();
     }
-    tapPosition = info.eventPosition.global.toString();
+    tapTracker.text = info.eventPosition.global.toString();
   }
 
   @override
