@@ -31,7 +31,7 @@ const scoreStyle = TextStyle(color: Colors.white,
 final scoreRenderer = TextPaint(style: scoreStyle);
 
 class Asteroids extends FlameGame
-  with TapDetector, KeyboardEvents, HasCollisionDetection {
+  with LongPressDetector, TapDetector, KeyboardEvents, HasCollisionDetection {
   bool isMobile;
   Asteroids(this.isMobile);
 
@@ -329,18 +329,36 @@ class Asteroids extends FlameGame
   }
 
   @override
+  void onLongPressStart(LongPressStartInfo info) {
+    super.onLongPressStart(info);
+    tapTracker.text = info.eventPosition.global.toString();
+  }
+
+  @override
+    void onLongPressMoveUpdate(LongPressMoveUpdateInfo info) {
+      super.onLongPressMoveUpdate(info);
+      tapTracker.text = info.eventPosition.global.toString();
+    }
+
+  @override
+  void onLongPressEnd(LongPressEndInfo info) {
+    super.onLongPressEnd(info);
+    tapTracker.text = info.eventPosition.global.toString();
+  }
+
+  @override
   void onTapDown(TapDownInfo info) {
     super.onTapDown(info);
     if (_playState == PlayState.background) {
       startGame();
     }
-    tapTracker.text = info.eventPosition.global.toString();
+    //tapPosition = info.eventPosition.global.toString();
   }
 
   @override
   void onTapUp(TapUpInfo info) {
     super.onTapUp(info);
-    tapPosition = info.eventPosition.global.toString();
+    //tapPosition = info.eventPosition.global.toString();
   }
 
   // TODO: Implement hyperdrive!
