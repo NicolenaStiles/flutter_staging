@@ -275,8 +275,8 @@ class Asteroids extends FlameGame
     tapTracker2 = TextComponent(
                     key: ComponentKey.named('tap2'), 
                     text: '',
-                    position: Vector2(0, canvasSize.y),
-                    anchor: Anchor.bottomRight);
+                    position: Vector2(canvasSize.x / 2, canvasSize.y),
+                    anchor: Anchor.bottomCenter);
     world.add(tapTracker2);
 
     // player's ship
