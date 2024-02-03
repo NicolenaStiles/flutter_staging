@@ -18750,7 +18750,7 @@ bG(){var s=this.ks$
 return s==null?this.t6():s}}
 A.iy.prototype={}
 A.cf.prototype={
-b7(){var s=0,r=A.A(t.z),q=this,p,o,n,m
+b7(){var s=0,r=A.A(t.z),q=this,p,o,n,m,l
 var $async$b7=A.B(function(a,b){if(a===1)return A.x(b,r)
 while(true)switch(s){case 0:q.tq()
 p=q.k4
@@ -18768,10 +18768,11 @@ o=new A.iy(p,o)
 n=p/16
 o.e=36*n/60
 o.f=n
-m=30*n/50
-o.y=m
-o.z=n
-o.Q=m/2
+m=p/32
+l=30*m/50
+o.y=l
+o.z=m
+o.Q=l/2
 o.as=n
 $.JB=o}q.cQ=3
 q.Br()
