@@ -330,6 +330,9 @@ class Asteroids extends FlameGame
   @override
   void onTapDown(TapDownInfo info) {
     super.onTapDown(info);
+    if (_playState == PlayState.background) {
+      startGame();
+    }
     tapPosition = info.eventPosition.global.toString();
   }
 
