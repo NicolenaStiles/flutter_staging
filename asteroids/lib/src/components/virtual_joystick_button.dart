@@ -40,6 +40,7 @@ class VirtualJoystickButton extends PositionComponent
   void onDragUpdate(DragUpdateEvent event) {
     super.onDragUpdate(event);
     newPosition = position + event.localDelta;
+    position = newPosition;
   }
 
   @override
