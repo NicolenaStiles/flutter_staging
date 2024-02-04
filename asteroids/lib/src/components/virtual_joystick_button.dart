@@ -1,4 +1,5 @@
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/events.dart';
 
 import 'package:flutter/material.dart';
@@ -59,7 +60,16 @@ class VirtualJoystickButton extends CircleComponent
   void onDragEnd(DragEndEvent event) {
     super.onDragEnd(event);
     _isDragged = false;
-    position = initalPosition;
+    add(MoveToEffect(
+      Vector2(
+        initalPosition.x,
+        initalPosition.y,
+      ),
+      EffectController(duration: 0.1),
+    ));
+
+    // this might be redundant?
+    // position = initalPosition;
   }
 
   @override 
