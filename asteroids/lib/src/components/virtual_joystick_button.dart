@@ -34,6 +34,8 @@ class VirtualJoystickButton extends CircleComponent
     super.onLoad();
     initalPosition.x = position.x;
     initalPosition.y = position.y;
+    newPosition.x = position.x;
+    newPosition.y = position.y;
   }
 
   @override
@@ -73,6 +75,13 @@ class VirtualJoystickButton extends CircleComponent
   void update(dt) {
     super.update(dt);
     dist = initalPosition.distanceTo(position);
+    if (dist < outerRadius) {
+      newPosition.x = position.x;
+      newPosition.y = position.y;
+    } else {
+      position.x = newPosition.x;
+      position.y = newPosition.y;
+    }
     game.oldPos.text = initalPosition.toString();
     game.newPos.text = position.toString();
     game.dist.text = dist.toString();
