@@ -19364,9 +19364,7 @@ eH(a){var s,r
 this.n7(a)
 s=this.at.d
 r=a.c
-r=s.ac(0,B.b.ga1(r).a.aq(0,B.b.ga1(r).b))
-this.p1=r
-s.aQ(r)
+s.aQ(s.ac(0,B.b.ga1(r).a.aq(0,B.b.ga1(r).b)))
 s.M()},
 cH(a){var s
 this.jM(a)
@@ -20399,31 +20397,30 @@ A.nA.prototype={
 lW(a){var s=this.e
 s.toString
 a.BD(new A.ya(this,a),t.x.a(s),t.cm)},
-eH(a){var s,r,q,p,o,n,m,l,k,j,i=A.a0(t.zy),h=this.e
-h.toString
-a.qt(!0,new A.yb(this,a,i),t.x.a(h),t.cm)
-for(h=this.at,h=A.bS(h,h.r),s=a.CW,r=A.j(h).c,q=a.c;h.k();){p=h.d
+eH(a){var s,r,q,p,o,n,m,l,k,j=A.a0(t.zy),i=this.e
+i.toString
+a.qt(!0,new A.yb(this,a,j),t.x.a(i),t.cm)
+for(i=this.at,i=A.bS(i,i.r),s=a.CW,r=A.j(i).c,q=a.c;i.k();){p=i.d
 if(p==null)p=r.a(p)
-if(p.a===s&&!i.u(0,p)){p=p.b
+if(p.a===s&&!j.u(0,p)){p=p.b
 p.n7(a)
-o=p.at.d
+p=p.at.d
+o=B.b.ga1(q)
 n=B.b.ga1(q)
-m=B.b.ga1(q)
-l=new Float64Array(2)
-k=new A.m(l)
-j=n.a.a
-l[1]=j[1]
-l[0]=j[0]
-k.c2(m.b)
-n=new Float64Array(2)
-m=new A.m(n)
-j=o.a
-n[1]=j[1]
-n[0]=j[0]
-m.v(0,k)
-p.p1=m
-o.aQ(m)
-o.M()}}},
+m=new Float64Array(2)
+l=new A.m(m)
+k=o.a.a
+m[1]=k[1]
+m[0]=k[0]
+l.c2(n.b)
+o=new Float64Array(2)
+n=new A.m(o)
+k=p.a
+o[1]=k[1]
+o[0]=k[0]
+n.v(0,l)
+p.aQ(n)
+p.M()}}},
 lV(a){this.at.o6(new A.y9(a),!0)},
 DG(a){this.at.o6(new A.y8(a),!0)},
 d8(){var s=this.e
