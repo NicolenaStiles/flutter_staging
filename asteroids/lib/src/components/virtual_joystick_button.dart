@@ -28,7 +28,8 @@ class VirtualJoystickButton extends CircleComponent
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    initalPosition = position;
+    initalPosition.x = position.x;
+    initalPosition.y = position.y;
   }
 
   @override
