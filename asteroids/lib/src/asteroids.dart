@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:math' as math;
 
 // flame game-related stuff
+import 'package:asteroids/src/components/virtual_joystick_base.dart';
+import 'package:asteroids/src/components/virtual_joystick_button.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
@@ -31,7 +33,7 @@ const scoreStyle = TextStyle(color: Colors.white,
 final scoreRenderer = TextPaint(style: scoreStyle);
 
 class Asteroids extends FlameGame
-  with PanDetector, LongPressDetector, TapDetector, KeyboardEvents, HasCollisionDetection {
+  with TapDetector, KeyboardEvents, HasCollisionDetection {
   bool isMobile;
   Asteroids(this.isMobile);
 
@@ -49,6 +51,8 @@ class Asteroids extends FlameGame
   static TextComponent tapTracker = TextComponent();
   static TextComponent tapTracker2 = TextComponent();
 
+  TextComponent oldPos = TextComponent();
+  TextComponent newPos = TextComponent();
   // timer things
   late Timer countdown;
 
@@ -78,7 +82,7 @@ class Asteroids extends FlameGame
       testCfg = game_settings.GameCfg.mobile(width, height);
     }
 
-    //debugMode = true;
+    debugMode = true;
 
     gestureDebug();
 
@@ -94,7 +98,36 @@ class Asteroids extends FlameGame
   }
 
   void gestureDebug () {
-    world.add(VirtualJoystick(innerRadius: 30, outerRadius: 60, position: size / 2));
+    oldPos = TextComponent(
+                key: ComponentKey.named('oldPos'), 
+                text: '',
+                position: Vector2(0, canvasSize.y),
+                anchor: Anchor.bottomLeft);
+    world.add(oldPos);
+
+    newPos = TextComponent(
+                key: ComponentKey.named('newPos'), 
+                text: '',
+                position: Vector2(0, canvasSize.y),
+                anchor: Anchor.bottomLeft);
+    world.add(newPos);
+
+    world.add(
+      VirtualJoystickBase(
+        key: ComponentKey.named('jbase'), 
+        radius: 60, 
+        position: size / 2 
+      )
+    );
+
+    world.add(
+      VirtualJoystickButton(
+        key: ComponentKey.named('jbutton'), 
+        radius: 20, 
+        position: size / 2 
+      )
+    );
+
   }
 
   // layout all the assets to determine if screen sizing is trash or not
