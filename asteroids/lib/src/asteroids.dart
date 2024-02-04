@@ -51,8 +51,6 @@ class Asteroids extends FlameGame
   static TextComponent tapTracker = TextComponent();
   static TextComponent tapTracker2 = TextComponent();
 
-  TextComponent oldPos = TextComponent();
-  TextComponent newPos = TextComponent();
   TextComponent dist = TextComponent();
   TextComponent ang = TextComponent();
 
@@ -102,30 +100,36 @@ class Asteroids extends FlameGame
 
   void gestureDebug () {
 
+    dist = TextComponent(
+                key: ComponentKey.named('dist'), 
+                text: '',
+                position: Vector2(canvasSize.x / 2, 0),
+                anchor: Anchor.topCenter);
+    world.add(dist);
+
     ang = TextComponent(
                 key: ComponentKey.named('ang'), 
                 text: '',
-                position: Vector2(canvasSize.x / 2, canvasSize.y),
-                anchor: Anchor.bottomCenter);
+                position: Vector2(canvasSize.x / 2, 40),
+                anchor: Anchor.topCenter);
     world.add(ang);
 
     world.add(
       VirtualJoystickBase(
         key: ComponentKey.named('jbase'), 
-        radius: 60, 
-        position: size / 2 
+        radius: 50, 
+        position: size * (3 / 4)
       )
     );
 
     world.add(
       VirtualJoystickButton(
         key: ComponentKey.named('jbutton'), 
-        position: size / 2, 
+        position: size * (3 / 4),
         radius: 20,
-        outerRadius: 60
+        outerRadius: 50
       )
     );
-
   }
 
   // layout all the assets to determine if screen sizing is trash or not

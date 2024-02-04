@@ -7,6 +7,7 @@ import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
 
 import '../asteroids.dart';
+import 'virtual_joystick_base.dart';
 
 class VirtualJoystickButton extends CircleComponent 
   with DragCallbacks, HasGameRef<Asteroids> {
@@ -30,6 +31,7 @@ class VirtualJoystickButton extends CircleComponent
 
   final double outerRadius;
   double dist = 0;
+  double ang = 0;
 
   @override
   Future<void> onLoad() async {
@@ -49,8 +51,6 @@ class VirtualJoystickButton extends CircleComponent
     super.onDragUpdate(event);
     Vector2 nextMove =  position + event.localDelta;
     double nextDist = initalPosition.distanceTo(nextMove);
-    // TODO: what the hell is going on with this angle nonsense
-    // currently outputs in degrees, but fuck it all
     double testAng = initalPosition.angleToSigned(position + event.localDelta) * (180 / pi);
     game.ang.text = testAng.toString();
     if (nextDist <= outerRadius) {
@@ -88,6 +88,11 @@ class VirtualJoystickButton extends CircleComponent
   @override
   void update(dt) {
     super.update(dt);
+    Vector2 basePos = game.findByKeyName<VirtualJoystickBase>('jbase')!.position;
+    dist = position.distanceTo(basePos);
+    ang = basePos.angleTo(position);
+    game.dist.text = 'Distance: $dist';
+    game.ang.text = 'Angle: $ang';
   }
 
 }
