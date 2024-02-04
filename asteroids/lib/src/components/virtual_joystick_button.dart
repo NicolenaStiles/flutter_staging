@@ -36,6 +36,7 @@ class VirtualJoystickButton extends CircleComponent
     initalPosition.y = position.y;
     newPosition.x = position.x;
     newPosition.y = position.y;
+    dist = initalPosition.distanceTo(position);
   }
 
   @override
@@ -47,7 +48,11 @@ class VirtualJoystickButton extends CircleComponent
   @override
   void onDragUpdate(DragUpdateEvent event) {
     super.onDragUpdate(event);
-    position += event.localDelta;
+    Vector2 nextMove =  position + event.localDelta;
+    double nextDist = initalPosition.distanceTo(nextMove);
+    if (nextDist < outerRadius) {
+      position += event.localDelta;
+    }   
   }
 
   @override
@@ -74,14 +79,6 @@ class VirtualJoystickButton extends CircleComponent
   @override
   void update(dt) {
     super.update(dt);
-    dist = initalPosition.distanceTo(position);
-    if (dist < outerRadius) {
-      newPosition.x = position.x;
-      newPosition.y = position.y;
-    } else {
-      position.x = newPosition.x;
-      position.y = newPosition.y;
-    }
     game.oldPos.text = initalPosition.toString();
     game.newPos.text = position.toString();
     game.dist.text = dist.toString();
