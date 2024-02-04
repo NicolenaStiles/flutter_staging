@@ -101,31 +101,18 @@ class Asteroids extends FlameGame
   }
 
   void gestureDebug () {
-    oldPos = TextComponent(
-                key: ComponentKey.named('oldPos'), 
-                text: '',
-                position: Vector2(0, canvasSize.y),
-                anchor: Anchor.bottomLeft);
-    world.add(oldPos);
-
-    newPos = TextComponent(
-                key: ComponentKey.named('newPos'), 
-                text: '',
-                position: Vector2(200, canvasSize.y),
-                anchor: Anchor.bottomLeft);
-    world.add(newPos);
 
     dist = TextComponent(
                 key: ComponentKey.named('dist'), 
                 text: '',
-                position: Vector2(400, canvasSize.y),
+                position: Vector2(0, canvasSize.y),
                 anchor: Anchor.bottomLeft);
     world.add(dist);
 
     ang = TextComponent(
                 key: ComponentKey.named('ang'), 
                 text: '',
-                position: Vector2(600, canvasSize.y),
+                position: Vector2(200, canvasSize.y),
                 anchor: Anchor.bottomLeft);
     world.add(ang);
 
