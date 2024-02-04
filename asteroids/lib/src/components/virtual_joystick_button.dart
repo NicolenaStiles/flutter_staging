@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/events.dart';
@@ -19,7 +21,6 @@ class VirtualJoystickButton extends CircleComponent
     required double radius,
     required this.outerRadius,
   }) : super (
-    angle: 0,
     radius : radius,
     anchor : Anchor.center,
     paint: Paint() 
@@ -48,7 +49,9 @@ class VirtualJoystickButton extends CircleComponent
     super.onDragUpdate(event);
     Vector2 nextMove =  position + event.localDelta;
     double nextDist = initalPosition.distanceTo(nextMove);
-    game.ang.text = initalPosition.angleTo(position + event.canvasDelta).toString();
+    // TODO: what the hell is going on with this angle nonsense
+    double testAng = initalPosition.angleToSigned(position + event.canvasDelta) * (180 / pi);
+    game.ang.text = testAng.toString();
     if (nextDist <= outerRadius) {
       position += event.localDelta;
     } else {
