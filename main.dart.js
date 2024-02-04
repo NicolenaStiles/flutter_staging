@@ -19453,7 +19453,7 @@ p=s.a
 p=Math.atan2(q[1]-p[1],q[0]-p[0])
 s.AY(r)
 o.gao().lu.stq("Distance: "+A.l(o.r7))
-o.gao().eD.stq("Angle: "+A.l((p+1.5707963267948966)*57.29577951308232))}}
+o.gao().eD.stq("Angle: "+A.l((1.5707963267948966-p)*57.29577951308232))}}
 A.t1.prototype={
 cF(){var s,r
 this.hL()
