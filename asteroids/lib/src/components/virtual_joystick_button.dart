@@ -20,6 +20,7 @@ class VirtualJoystickButton extends PositionComponent
   }) {
     super.size = Vector2(radius * 2, radius * 2);
     super.anchor = Anchor.center;
+    super.priority = 3;
   }
 
   final double radius;
@@ -57,7 +58,6 @@ class VirtualJoystickButton extends PositionComponent
   @override
   void update(dt) {
     super.update(dt);
-    position = newPosition;
     game.oldPos.text = initalPosition.toString();
     game.newPos.text = newPosition.toString();
   }

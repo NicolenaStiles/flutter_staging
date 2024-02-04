@@ -108,7 +108,7 @@ class Asteroids extends FlameGame
     newPos = TextComponent(
                 key: ComponentKey.named('newPos'), 
                 text: '',
-                position: Vector2(0, canvasSize.y),
+                position: Vector2(60, canvasSize.y),
                 anchor: Anchor.bottomLeft);
     world.add(newPos);
 

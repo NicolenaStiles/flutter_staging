@@ -14,6 +14,7 @@ class VirtualJoystickBase extends PositionComponent
   }) {
     super.size = Vector2(radius * 2, radius * 2);
     super.anchor = Anchor.center;
+    super.priority = 2;
   }
 
   final double radius;
