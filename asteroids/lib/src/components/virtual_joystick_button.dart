@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../asteroids.dart';
 
-class VirtualJoystickButton extends PositionComponent
+class VirtualJoystickButton extends CircleComponent 
   with DragCallbacks, HasGameRef<Asteroids> {
 
   bool _isDragged = false;
@@ -14,21 +14,22 @@ class VirtualJoystickButton extends PositionComponent
   Vector2 newPosition = Vector2.zero();
 
   VirtualJoystickButton({
-    required super.key,
-    required this.radius,
+    required ComponentKey key,
     required super.position,
-  }) {
-    super.size = Vector2(radius * 2, radius * 2);
-    super.anchor = Anchor.center;
-    super.priority = 3;
-  }
-
-  final double radius;
-
-  final _paint = Paint() 
+    required double radius,
+  }) : super (
+    radius : radius,
+    anchor : Anchor.center,
+    paint: Paint() 
         ..style = PaintingStyle.fill
         ..strokeWidth = 2.0
-        ..color = Colors.cyan;
+        ..color = Colors.cyan);
+
+  @override
+  Future<void> onLoad() async {
+    super.onLoad();
+    initalPosition = position;
+  }
 
   @override
   void onDragStart(DragStartEvent event) {
@@ -48,18 +49,11 @@ class VirtualJoystickButton extends PositionComponent
     _isDragged = false;
   }
 
-  // TODO: using the outer radius for something like this seems weird?
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
-    canvas.drawCircle(Offset(radius, radius), radius, _paint);
-  }
-
   @override
   void update(dt) {
     super.update(dt);
     game.oldPos.text = initalPosition.toString();
-    game.newPos.text = newPosition.toString();
+    game.newPos.text = position.toString();
   }
 
 }
