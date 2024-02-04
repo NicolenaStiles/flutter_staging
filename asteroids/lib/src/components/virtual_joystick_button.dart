@@ -51,15 +51,19 @@ class VirtualJoystickButton extends CircleComponent
     super.onDragUpdate(event);
     Vector2 nextMove =  position + event.localDelta;
     double nextDist = initalPosition.distanceTo(nextMove);
+    game.ang.text = initalPosition.angleTo(nextMove).toString();
     if (nextDist < outerRadius) {
       position += event.localDelta;
-    }   
+    } else {
+      //initalPosition.angleTo(nextMove);
+    }
   }
 
   @override
   void onDragEnd(DragEndEvent event) {
     super.onDragEnd(event);
     _isDragged = false;
+    // smooooooth return to center effect
     add(MoveToEffect(
       Vector2(
         initalPosition.x,
@@ -68,8 +72,6 @@ class VirtualJoystickButton extends CircleComponent
       EffectController(duration: 0.1),
     ));
 
-    // this might be redundant?
-    // position = initalPosition;
   }
 
   @override 

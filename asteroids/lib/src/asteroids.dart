@@ -54,6 +54,7 @@ class Asteroids extends FlameGame
   TextComponent oldPos = TextComponent();
   TextComponent newPos = TextComponent();
   TextComponent dist = TextComponent();
+  TextComponent ang = TextComponent();
 
   // timer things
   late Timer countdown;
@@ -120,6 +121,13 @@ class Asteroids extends FlameGame
                 position: Vector2(400, canvasSize.y),
                 anchor: Anchor.bottomLeft);
     world.add(dist);
+
+    ang = TextComponent(
+                key: ComponentKey.named('ang'), 
+                text: '',
+                position: Vector2(600, canvasSize.y),
+                anchor: Anchor.bottomLeft);
+    world.add(ang);
 
     world.add(
       VirtualJoystickBase(
