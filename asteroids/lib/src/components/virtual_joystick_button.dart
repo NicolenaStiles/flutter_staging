@@ -47,6 +47,7 @@ class VirtualJoystickButton extends CircleComponent
   void onDragEnd(DragEndEvent event) {
     super.onDragEnd(event);
     _isDragged = false;
+    position = initalPosition;
   }
 
   @override
