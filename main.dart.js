@@ -19443,17 +19443,17 @@ s=this.d6
 r=this.d2$
 if(s)r.saT(B.rF)
 else r.saT(B.bG)},
-ag(a){var s,r,q,p,o,n=this
-n.jU(a)
-s=n.gao().bC(new A.aR(B.c.gp("jbase")),t.u7).at.d
-r=n.at.d
-n.r7=Math.sqrt(r.fR(s))
+ag(a){var s,r,q,p,o=this
+o.jU(a)
+s=o.gao().bC(new A.aR(B.c.gp("jbase")),t.u7).at.d
+r=o.at.d
+o.r7=Math.sqrt(r.fR(s))
 q=r.a
 p=s.a
-o=Math.atan2(q[1]-p[1],q[0]-p[0])
+p=Math.atan2(q[1]-p[1],q[0]-p[0])
 s.AY(r)
-n.gao().lu.stq("Distance: "+A.l(n.r7))
-n.gao().eD.stq("Angle: "+A.l(o*57.29577951308232))}}
+o.gao().lu.stq("Distance: "+A.l(o.r7))
+o.gao().eD.stq("Angle: "+A.l((p+1.5707963267948966)*57.29577951308232))}}
 A.t1.prototype={
 cF(){var s,r
 this.hL()
