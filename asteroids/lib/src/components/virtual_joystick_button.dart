@@ -50,7 +50,8 @@ class VirtualJoystickButton extends CircleComponent
     Vector2 nextMove =  position + event.localDelta;
     double nextDist = initalPosition.distanceTo(nextMove);
     // TODO: what the hell is going on with this angle nonsense
-    double testAng = initalPosition.angleToSigned(position + event.canvasDelta) * (180 / pi);
+    // currently outputs in degrees, but fuck it all
+    double testAng = initalPosition.angleToSigned(position + event.localDelta) * (180 / pi);
     game.ang.text = testAng.toString();
     if (nextDist <= outerRadius) {
       position += event.localDelta;
