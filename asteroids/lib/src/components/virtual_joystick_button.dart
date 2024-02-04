@@ -35,11 +35,13 @@ class VirtualJoystickButton extends CircleComponent
   void onDragStart(DragStartEvent event) {
     super.onDragStart(event);
     _isDragged = true;
+    paint.color = Colors.green;
   }
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
     super.onDragUpdate(event);
+    paint.color = Colors.green;
     position += event.localDelta;
   }
 
@@ -47,6 +49,7 @@ class VirtualJoystickButton extends CircleComponent
   void onDragEnd(DragEndEvent event) {
     super.onDragEnd(event);
     _isDragged = false;
+    paint.color = Colors.cyan;
     position = initalPosition;
   }
 
