@@ -118,14 +118,14 @@ class Asteroids extends FlameGame
       VirtualJoystickBase(
         key: ComponentKey.named('jbase'), 
         radius: 50, 
-        position: size * (3 / 4)
+        position: Vector2(size.x / 2, size.y * (3 / 4)),
       )
     );
 
     world.add(
       VirtualJoystickButton(
         key: ComponentKey.named('jbutton'), 
-        position: size * (3 / 4),
+        position: Vector2(size.x / 2, size.y * (3 / 4)),
         radius: 20,
         outerRadius: 50
       )

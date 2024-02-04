@@ -90,6 +90,7 @@ class VirtualJoystickButton extends CircleComponent
     Vector2 basePos = game.findByKeyName<VirtualJoystickBase>('jbase')!.position;
     dist = position.distanceTo(basePos);
     double radAng = atan2(position.y - basePos.y, position.x - basePos.x);
+    radAng = radAng * radians2Degrees;
     ang = basePos.angleTo(position);
     game.dist.text = 'Distance: $dist';
     game.ang.text = 'Angle: $radAng';
