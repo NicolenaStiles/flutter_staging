@@ -14,8 +14,8 @@ const RESOURCES = {"assets/assets/fonts/ProFont_NF/ProFontIIxNerdFontMono-Regula
 "assets/fonts/MaterialIcons-Regular.otf": "32fce58e2acb9c420eab0fe7b828b761",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "89ed8f4e49bcdfc0b5bfc9b24591e347",
 "manifest.json": "543225d2ca54c0393fc751f9e9355540",
-"index.html": "fa925e8834cddc2efff57d1ea5e21b90",
-"/": "fa925e8834cddc2efff57d1ea5e21b90",
+"index.html": "0dbb48ba127dec06aa29811f78aa0558",
+"/": "0dbb48ba127dec06aa29811f78aa0558",
 "canvaskit/chromium/canvaskit.wasm": "143af6ff368f9cd21c863bfa4274c406",
 "canvaskit/chromium/canvaskit.js": "0ae8bbcc58155679458a0f7a00f66873",
 "canvaskit/skwasm.wasm": "2fc47c0a0c3c7af8542b601634fe9674",
@@ -28,7 +28,7 @@ const RESOURCES = {"assets/assets/fonts/ProFont_NF/ProFontIIxNerdFontMono-Regula
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "favicon.png": "5dcef449791fa27946b3d35ad8803796",
-"main.dart.js": "505afbf90c1d5729abc39a117f45983e",
+"main.dart.js": "1108dacebfae0562af3db560a53d864e",
 "flutter.js": "7d69e653079438abfbb24b82a655b0a4",
 "version.json": "f9cdab68e3d7a61dd81fef3532d9b0e3"};
 // The application shell files that are downloaded before a service worker can
