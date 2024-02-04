@@ -12,7 +12,6 @@ class VirtualJoystickButton extends CircleComponent
   bool _isDragged = false;
 
   Vector2 initalPosition = Vector2.zero();
-  Vector2 newPosition = Vector2.zero();
 
   VirtualJoystickButton({
     required ComponentKey key,
@@ -20,6 +19,7 @@ class VirtualJoystickButton extends CircleComponent
     required double radius,
     required this.outerRadius,
   }) : super (
+    angle: 0,
     radius : radius,
     anchor : Anchor.center,
     paint: Paint() 
@@ -35,9 +35,6 @@ class VirtualJoystickButton extends CircleComponent
     super.onLoad();
     initalPosition.x = position.x;
     initalPosition.y = position.y;
-    newPosition.x = position.x;
-    newPosition.y = position.y;
-    dist = initalPosition.distanceTo(position);
   }
 
   @override
@@ -78,11 +75,7 @@ class VirtualJoystickButton extends CircleComponent
   void render(canvas) {
     super.render(canvas);
     if (_isDragged) {
-      if (dist > outerRadius) {
-        paint.color = Colors.red;
-      } else {
-        paint.color = Colors.green;
-      }
+      paint.color = Colors.green;
     } else {
       paint.color = Colors.cyan;
     }
@@ -91,7 +84,6 @@ class VirtualJoystickButton extends CircleComponent
   @override
   void update(dt) {
     super.update(dt);
-    game.dist.text = dist.toString();
   }
 
 }
