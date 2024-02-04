@@ -78,10 +78,12 @@ class Asteroids extends FlameGame
       testCfg = game_settings.GameCfg.mobile(width, height);
     }
 
-    debugMode = true;
+    //debugMode = true;
 
-    playState = PlayState.background;
-    animateBackground(true);
+    gestureDebug();
+
+    // playState = PlayState.background;
+    // animateBackground(true);
     
     // layoutDebug();
 
@@ -89,6 +91,10 @@ class Asteroids extends FlameGame
     playState = PlayState.background;
     animateBackground(true);
     */
+  }
+
+  void gestureDebug () {
+    world.add(VirtualJoystick(innerRadius: 30, outerRadius: 60, position: size / 2));
   }
 
   // layout all the assets to determine if screen sizing is trash or not
@@ -278,8 +284,7 @@ class Asteroids extends FlameGame
                     anchor: Anchor.bottomCenter);
     world.add(tapTracker2);
 
-    world.add(DragTest(radius: 100, position: size / 2));
-
+    /*
     // player's ship
     Vector2 shipPos = Vector2(0, 0);
     shipPos.x = size.x * (1/2);
@@ -290,6 +295,7 @@ class Asteroids extends FlameGame
       size : Vector2(testCfg.playerWidth, testCfg.playerHeight),
       shipType: ShipType.player,
     ));
+    */
 
     // display score
     String formattedScore = score.toString().padLeft(4, '0');
@@ -318,6 +324,17 @@ class Asteroids extends FlameGame
       );
     }
 
+  }
+
+  /*
+  @override
+  void onTapDown(TapDownInfo info) {
+    super.onTapDown(info);
+    if (_playState == PlayState.background) {
+      startGame();
+    }
+    tapPosition = info.eventPosition.global.toString();
+    tapTracker2.text = 'tap down';
   }
 
   // main gameplay loop
@@ -357,17 +374,7 @@ class Asteroids extends FlameGame
     tapTracker2.text = 'pan end';
   }
 
-  @override
-  void onTapDown(TapDownInfo info) {
-    super.onTapDown(info);
-    if (_playState == PlayState.background) {
-      startGame();
-    }
-    tapPosition = info.eventPosition.global.toString();
-    tapTracker2.text = 'tap down';
-  }
 
-  /*
   @override
   void onLongPressStart(LongPressStartInfo info) {
     super.onLongPressStart(info);
