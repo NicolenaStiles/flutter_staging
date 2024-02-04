@@ -51,8 +51,7 @@ class VirtualJoystickButton extends CircleComponent
     super.onDragUpdate(event);
     Vector2 nextMove =  position + event.localDelta;
     double nextDist = initalPosition.distanceTo(nextMove);
-    double testAng = initalPosition.angleToSigned(position + event.localDelta) * (180 / pi);
-    game.ang.text = testAng.toString();
+    //double testAng = initalPosition.angleToSigned(position + event.localDelta) * (180 / pi);
     if (nextDist <= outerRadius) {
       position += event.localDelta;
     } else {
