@@ -8,67 +8,17 @@ import 'package:flutter/material.dart';
 
 import '../asteroids.dart';
 
-class VirtualJoystick extends PositionComponent
+class VirtualJoystick extends PositionComponent 
   with HasVisibility, HasGameRef<Asteroids> {
 
-  // radius determines outer ring size.
-  // button radius should be calculated
   VirtualJoystick({ 
-    required ComponentKey key,
-    required this.radius,
-    required super.position,
-  }) : super ( 
-    size: Vector2(radius * 2, radius * 2),
-    anchor: Anchor.center,
-    priority: 1,
-  );
-
-  final _paint = Paint() 
-        ..style = PaintingStyle.fill
-        ..strokeWidth = 2.0
-        ..color = Colors.red;
-
-  final double radius;
-
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
-    canvas.drawRect(
-      Rect.fromCenter(
-        center: Offset(radius,radius), 
-        width: width, 
-        height: height), _paint);
-  }
-
-  @override
-  Future<void> onLoad() async {
-    super.onLoad();
-
-    add(
-      JoystickBase(
-        key: ComponentKey.named('base'), 
-        radius: radius, 
-        position: Vector2(radius, radius)));
-
-    add( 
-      JoystickButton(
-        key: ComponentKey.named('button'), 
-        radius: radius / 2,
-        position: size / 2));
-  }
-}
-
-class JoystickBase extends PositionComponent 
-  with HasGameRef<Asteroids> {
-
-  JoystickBase({ 
     required ComponentKey key,
     required this.radius,
     required super.position
   }) : super( 
     size: Vector2(radius * 2, radius * 2),
     anchor: Anchor.center,
-    priority: 2,
+    priority: 1,
   );
 
   final double radius;
@@ -84,6 +34,17 @@ class JoystickBase extends PositionComponent
     super.render(canvas);
     canvas.drawCircle(Offset(radius, radius), radius, _paintBorder);
   }
+
+  @override
+  Future<void> onLoad() async {
+    super.onLoad();
+
+    add( 
+      JoystickButton(
+        key: ComponentKey.named('button'), 
+        radius: radius / 2,
+        position: size / 2));
+  }
 }
 
 class JoystickButton extends CircleComponent
@@ -97,7 +58,7 @@ class JoystickButton extends CircleComponent
     required super.position,
   }) : super ( 
     anchor: Anchor.center,
-    priority: 3,
+    priority: 2,
   );
 
   @override
@@ -116,6 +77,14 @@ class JoystickButton extends CircleComponent
   void onDragEnd(DragEndEvent event) {
     super.onDragEnd(event);
     _isDragged = false;
+    // smooooooth return to center effect
+    add(MoveToEffect(
+      Vector2(
+        0,
+        0,
+      ),
+      EffectController(duration: 0.1),
+    ));
   }
 
   @override
