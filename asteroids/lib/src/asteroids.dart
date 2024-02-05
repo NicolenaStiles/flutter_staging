@@ -83,7 +83,7 @@ class Asteroids extends FlameGame
       testCfg = game_settings.GameCfg.mobile(width, height);
     }
 
-    debugMode = true;
+    debugMode = false;
 
     gestureDebug();
 
@@ -115,6 +115,13 @@ class Asteroids extends FlameGame
     world.add(ang);
 
     world.add(
+      VirtualJoystick(
+        key: ComponentKey.named('joystick'), 
+        radius: 200, 
+        position: Vector2(size.x / 2, size.y * (3 / 4))));
+
+    /*
+    world.add(
       VirtualJoystickBase(
         key: ComponentKey.named('jbase'), 
         radius: 50, 
@@ -130,6 +137,7 @@ class Asteroids extends FlameGame
         outerRadius: 50
       )
     );
+    */
   }
 
   // layout all the assets to determine if screen sizing is trash or not
