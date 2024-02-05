@@ -61,16 +61,46 @@ class JoystickButton extends CircleComponent
     priority: 2,
   );
 
+  // init everything to zero
+  double maxDist = 0;
+  double dist = 0;
+  double ang = 0;
+  Vector2 centeredPoint = Vector2.zero();
+
+  @override
+  Future<void> onLoad() async {
+    super.onLoad();
+    centeredPoint.x = radius * 2;
+    centeredPoint.y = radius * 2;
+    maxDist = findParent<VirtualJoystick>()!.radius;
+  }
+
   @override
   void onDragStart(DragStartEvent event) {
     super.onDragStart(event);
     _isDragged = true;
+    // distance calculations
+    dist = position.distanceTo(centeredPoint);
+    // angle calcs
+    ang = atan2(-(position.x - centeredPoint.x), -(position.y - centeredPoint.y));
+    ang = (ang * radians2Degrees);
   }
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
     super.onDragUpdate(event);
-      position += event.localDelta;
+    Vector2 newPos = position + event.localDelta;
+    double newAng = atan2(-(newPos.x - centeredPoint.x), 
+                          -(newPos.y - centeredPoint.y));
+    // distance calculations
+    dist = newPos.distanceTo(centeredPoint);
+    if (dist > maxDist) {
+      newPos.x = maxDist * sin(newAng);
+      newPos.y = maxDist * cos(newAng);
+    } else {
+      position = newPos;
+      ang = newAng;
+    }
   }
 
   @override
@@ -78,13 +108,13 @@ class JoystickButton extends CircleComponent
     super.onDragEnd(event);
     _isDragged = false;
     // smooooooth return to center effect
-    add(MoveToEffect(
-      Vector2(
-        0,
-        0,
-      ),
-      EffectController(duration: 0.1),
+    add(
+      MoveToEffect(
+        centeredPoint,
+        EffectController(duration: 0.1),
     ));
+    dist = 0;
+    ang = 0;
   }
 
   @override
@@ -95,6 +125,14 @@ class JoystickButton extends CircleComponent
     } else {
       paint.color = Colors.cyan;
     }
+  }
+
+  @override
+  void update(dt) {
+    super.update(dt);
+    // only provide updates to the object if _isDragged == true!
+    game.dist.text = 'Distance: $dist';
+    game.ang.text = 'Angle: ${ang * radians2Degrees}';
   }
 }
 

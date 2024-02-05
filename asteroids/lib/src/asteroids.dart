@@ -83,7 +83,7 @@ class Asteroids extends FlameGame
       testCfg = game_settings.GameCfg.mobile(width, height);
     }
 
-    debugMode = false;
+    debugMode = true;
 
     gestureDebug();
 
