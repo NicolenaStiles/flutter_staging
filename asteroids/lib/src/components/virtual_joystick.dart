@@ -24,6 +24,7 @@ class TestJoystick extends JoystickComponent
   bool onDragStart(DragStartEvent event) {
     super.onDragStart(event);
     game.findByKeyName<Player>('player')!.isJoystickActive = true;
+    game.isJoystickActive = true;
     isVisible = true;
     return false;
   }
@@ -41,6 +42,7 @@ class TestJoystick extends JoystickComponent
   void onDragStop() {
     super.onDragStop();
     game.findByKeyName<Player>('player')!.isJoystickActive = false;
+    game.isJoystickActive = false;
     isVisible = false;
   }
 

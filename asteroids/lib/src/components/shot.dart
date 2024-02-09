@@ -16,12 +16,12 @@ class Shot extends CircleComponent
     required super.position,
     required super.angle,
   }) : super(
-            radius: game_settings.shotRadiusDesktop,
-            anchor: Anchor.center,
-            paint: Paint()
-              ..color = Colors.white
-              ..style = PaintingStyle.fill,
-            children: [CircleHitbox(radius: game_settings.shotRadiusDesktop)],
+    radius: game_settings.shotRadiusDesktop,
+    anchor: Anchor.center,
+    paint: Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill,
+    children: [CircleHitbox(radius: game_settings.shotRadiusDesktop)],
  );
 
   int _timer = 0;
