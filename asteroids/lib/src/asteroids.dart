@@ -6,6 +6,7 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
+import 'package:flame/input.dart';
 import 'package:flame/palette.dart';
 
 // general flutter packages
@@ -50,11 +51,9 @@ class Asteroids extends FlameGame
   static TextComponent tapTracker = TextComponent();
   static TextComponent tapTracker2 = TextComponent();
 
-  // WARN: debugging gestures
+  // gesture input
   late final TestJoystick joystick;
-
-  TextComponent dist = TextComponent();
-  TextComponent ang = TextComponent();
+  late final HudButtonComponent buttonShoot;
 
   // timer things
   late Timer countdown;
@@ -86,28 +85,14 @@ class Asteroids extends FlameGame
     }
 
     //debugMode = false;
-    //_playState = PlayState.debug;
-    //gestureDebug();
+    _playState = PlayState.debug;
+    gestureDebug();
 
-    playState = PlayState.background;
-    animateBackground(true);
+    //playState = PlayState.background;
+    //animateBackground(true);
   }
 
   void gestureDebug () {
-
-    dist = TextComponent(
-                key: ComponentKey.named('dist'), 
-                text: '',
-                position: Vector2(canvasSize.x / 2, 0),
-                anchor: Anchor.topCenter);
-    world.add(dist);
-
-    ang = TextComponent(
-                key: ComponentKey.named('ang'), 
-                text: '',
-                position: Vector2(canvasSize.x / 2, 40),
-                anchor: Anchor.topCenter);
-    world.add(ang);
 
     // player's ship
     Vector2 shipPos = Vector2(0, 0);
@@ -132,6 +117,32 @@ class Asteroids extends FlameGame
     );
     joystick.isVisible = false;
     world.add(joystick);
+
+    HudMarginComponent testMargin = HudMarginComponent( 
+      margin: const EdgeInsets.only(
+        top: 10,
+        left: 10,
+      ),
+    );
+
+    world.add(testMargin);
+
+    // HUD button component
+    buttonShoot = HudButtonComponent( 
+      button: CircleComponent(
+        radius: 50, 
+        paint: knobPaint
+      ),
+      size: Vector2(100, 100),
+      margin: const EdgeInsets.only(
+        left:  20, 
+        bottom: 20
+      ),
+      onPressed: () { 
+        findByKeyName<Player>('player')!.fireShot = true; 
+      },
+    );
+    add(buttonShoot);
   }
 
   // layout all the assets to determine if screen sizing is trash or not
@@ -370,9 +381,20 @@ class Asteroids extends FlameGame
     super.onTapDown(info);
     if (_playState == PlayState.background) {
       startGame();
+      return;
     }
-    joystick.position = info.eventPosition.widget;
-    joystick.isVisible = true;
+    if (!buttonShoot.containsPoint(info.eventPosition.widget)) {
+      joystick.position = info.eventPosition.widget;
+      joystick.isVisible = true;
+    }
+  }
+
+  @override
+  void onTapUp(TapUpInfo info) {
+    super.onTapUp(info);
+    if (buttonShoot.containsPoint(info.eventPosition.widget)) {
+      findByKeyName<Player>('player')!.fireShot = false; 
+    }
   }
 
   // main gameplay loop
@@ -384,8 +406,6 @@ class Asteroids extends FlameGame
       case PlayState.debug:
         //findByKeyName<Player>('player')!.angle = joystick.delta.screenAngle();
         //findByKeyName<Player>('player')!
-        //dist.text = joystick.intensity.toString();
-        //ang.text = (joystick.delta.screenAngle() * radians2Degrees).toString();
         break;
       case PlayState.background:
         countdown.update(dt);
@@ -418,14 +438,14 @@ class Asteroids extends FlameGame
           //world.children.query<Player>().first.moveForward = true;
         // rotation
         case LogicalKeyboardKey.keyA: 
-          findByKeyName<Player>('player')!.rotateLeft= true;
+          findByKeyName<Player>('player')!.rotateLeft = true;
           //world.children.query<Player>().first.rotateLeft = true;
         case LogicalKeyboardKey.keyD: 
-          findByKeyName<Player>('player')!.rotateRight= true;
+          findByKeyName<Player>('player')!.rotateRight = true;
           //world.children.query<Player>().first.rotateRight = true;
         // shooting
         case LogicalKeyboardKey.space: 
-          findByKeyName<Player>('player')!.fireShot= true;
+          findByKeyName<Player>('player')!.fireShot = true;
           //world.children.query<Player>().first.fireShot = true;
         case LogicalKeyboardKey.enter:
           startGame();
@@ -435,7 +455,7 @@ class Asteroids extends FlameGame
       switch (event.logicalKey) {
         // movement
         case LogicalKeyboardKey.keyW: 
-          findByKeyName<Player>('player')!.moveForward= false;
+          findByKeyName<Player>('player')!.moveForward = false;
           //world.children.query<Player>().first.moveForward = false;
         // rotation
         case LogicalKeyboardKey.keyA: 

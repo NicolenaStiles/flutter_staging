@@ -167,8 +167,6 @@ class JoystickButton extends CircleComponent
   void update(dt) {
     super.update(dt);
     // only provide updates to the object if _isDragged == true!
-    game.dist.text = 'Distance: $dist';
-    game.ang.text = 'Angle: ${ang * radians2Degrees}';
   }
 }
 

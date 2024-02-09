@@ -375,9 +375,15 @@ class Player extends PositionComponent
     }
 
     if (isMobileGame) {
-      // movement and rotation
-      mobileTurn(dt);
+      // movement
       mobileMovePlayer(dt);
+
+      // rotation
+      mobileTurn(dt);
+
+      // shots: firing and managing cooldown
+      handleShot(fireShot);
+
     } else {
       // movement
       movePlayer(dt);
