@@ -4,6 +4,8 @@ import 'dart:async';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:flame/input.dart';
+import 'package:flame/palette.dart';
 
 // general flutter packages
 import 'package:flutter/material.dart';
@@ -17,7 +19,9 @@ import 'config.dart' as game_settings;
 game_settings.GameCfg testCfg = game_settings.GameCfg.desktop();
 
 class MobileAsteroids extends FlameGame
-  with KeyboardEvents, HasCollisionDetection {
+  with MultiTouchTapDetector, HasCollisionDetection {
+
+  // are we running on mobile?
   bool isMobile;
   MobileAsteroids(this.isMobile);
 
@@ -28,8 +32,16 @@ class MobileAsteroids extends FlameGame
   int score = 0;
   int lives = game_settings.playerLives;
 
-  // displaying score
-  static TextComponent scoreboard = TextComponent();
+  // displaying debug info 
+  static TextComponent tapIdsText = TextComponent();
+  static TextComponent tapPosText = TextComponent();
+
+  List<String> tapIdsList = [];
+  List<String> tapPosList = []; 
+
+  // gesture input
+  late final TestJoystick joystick;
+  late final HudButtonComponent buttonShoot;
 
   @override
   FutureOr<void> onLoad() async {
@@ -44,11 +56,11 @@ class MobileAsteroids extends FlameGame
       testCfg = game_settings.GameCfg.mobile(width, height);
     }
 
-    layoutDebug();
+    gestureDebug();
   }
 
-  void layoutDebug() {
-    
+  void gestureDebug() {
+
     // player's ship
     Vector2 shipPos = Vector2(0, 0);
     shipPos.x = size.x * (1/2);
@@ -58,72 +70,88 @@ class MobileAsteroids extends FlameGame
       position: shipPos,
       size : Vector2(testCfg.playerWidth, testCfg.playerHeight),
       shipType: ShipType.player,
-      isMobileGame: isMobile,
+      isMobileGame: true,
     ));
+
+    // Virtual Joystick ('TestJoystick' class)
+    final knobPaint = BasicPalette.white.withAlpha(200).paint();
+    final backgroundPaint = BasicPalette.white.withAlpha(100).paint();
+    joystick = TestJoystick(
+      key: ComponentKey.named('joystick'),
+      knob: CircleComponent(radius: 20, paint: knobPaint),
+      background: CircleComponent(radius: 50, paint: backgroundPaint),
+      position: size * (3 / 4),
+    );
+    joystick.isVisible = false;
+    world.add(joystick);
+
+    // margin for world
+    HudMarginComponent testMargin = HudMarginComponent( 
+      margin: const EdgeInsets.only(
+        top: 10,
+        left: 10,
+      ),
+    );
+    world.add(testMargin);
+
+    // HUD button component
+    final buttonUp = BasicPalette.white.withAlpha(200).paint();
+    final buttonDown = BasicPalette.gray.withAlpha(200).paint();
+    buttonShoot = HudButtonComponent( 
+      button: CircleComponent(
+        radius: 50, 
+        paint: buttonUp, 
+      ),
+      buttonDown: CircleComponent( 
+        radius: 50,
+        paint: buttonDown,
+      ),
+      size: Vector2(100, 100),
+      margin: const EdgeInsets.only(
+        left:  20, 
+        bottom: 20
+      ),
+    );
+    add(buttonShoot);
     
-    // asteroids
-    for (var j = 3; j > 0; j--) {
-      Vector2 asteroidPos = Vector2(0, 0);
-      asteroidPos.y = (j / 5) * size.y;
-      for (var i = 1; i < 4; i++) {
-        asteroidPos.x = (i / 4) * size.x;
-        Vector2 asteroidSize = Vector2(0, 0);
-        // TODO: add same logic to random asteroid gen
-        switch (AsteroidSize.values[j - 1]) {
-          case AsteroidSize.large:
-           asteroidSize.x = testCfg.largeAsteroidSize; 
-           asteroidSize.y = testCfg.largeAsteroidSize; 
-          case AsteroidSize.medium:
-           asteroidSize.x = testCfg.mediumAsteroidSize; 
-           asteroidSize.y = testCfg.mediumAsteroidSize; 
-          case AsteroidSize.small:
-           asteroidSize.x = testCfg.smallAsteroidSize; 
-           asteroidSize.y = testCfg.smallAsteroidSize; 
-        }
-        world.add(Asteroid(
-          objType: AsteroidType.values[i - 1],
-          objSize: AsteroidSize.values[j - 1],
-          velocity: 0,
-          size: asteroidSize,
-          position: asteroidPos, 
-          angle: 0,
-        ));
-      }
-    }
+    // debug info
+    tapIdsText = TextComponent(
+        key: ComponentKey.named('tapIds'),
+        text: tapIdsList.toString(), 
+        anchor: Anchor.topCenter,
+        position: Vector2(width / 2, 0));
+    world.add(tapIdsText);
 
-    // HUD stuff: scoreboard and lives tracker
-    // scoreboard
-    TextStyle scoreStyle = TextStyle(color: Colors.white, 
-                                     fontSize: testCfg.fontSize, 
-                                     fontFamily: 'Hyperspace');
-    final scoreRenderer = TextPaint(style: scoreStyle);
-
-    // score 
-    String formattedScore = score.toString().padLeft(4, '0');
-    scoreboard = TextComponent(
-        key: ComponentKey.named('scoreboard'),
-        text: formattedScore, 
-        textRenderer: scoreRenderer,
-        anchor: Anchor.topLeft,
-        position: Vector2(0,0));
-    world.add(scoreboard);
-
-    // lives tracker
-    for (int n = 0; n < lives; n++) {
-      String lifeKey = "life$n";
-      double xPos = width - (((n + 1) * testCfg.livesOffset) 
-                                 + (n * testCfg.livesWidth) 
-                                 + (testCfg.livesWidth / 2));
-      double yPos = testCfg.livesOffset + (testCfg.livesHeight / 2);
-      world.add(
-        Player(
-          key: ComponentKey.named(lifeKey),
-          position: Vector2(xPos, yPos),
-          size : Vector2(testCfg.livesWidth, testCfg.livesHeight),
-          shipType: ShipType.lives,
-          isMobileGame: isMobile,
-        )
-      );
-    }
+    tapPosText = TextComponent(
+        key: ComponentKey.named('tapPos'),
+        text: tapPosList.toString(), 
+        anchor: Anchor.topCenter,
+        position: Vector2(width / 2, 40));
+    world.add(tapPosText);
   }
+  
+  // handling tap events
+  @override 
+  void onTapDown(int pointerId, TapDownInfo info) {
+    super.onTapDown(pointerId, info);
+    tapIdsList.add(pointerId.toString());
+    tapPosList.add(info.eventPosition.widget.toString());
+  }
+
+  @override
+  void onTapUp(int pointerId, TapUpInfo info) {
+    super.onTapUp(pointerId, info);
+    tapIdsList.remove(pointerId.toString());
+    tapPosList.remove(info.eventPosition.widget.toString());
+  }
+
+  // main gameplay loop
+  @override 
+  void update(double dt) {
+    super.update(dt);
+    tapIdsText.text = tapIdsList.toString();
+    tapPosText.text = tapPosList.toString();
+  }
+
+
 }
