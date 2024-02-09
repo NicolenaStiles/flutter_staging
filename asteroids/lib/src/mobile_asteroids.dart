@@ -91,8 +91,8 @@ class MobileAsteroids extends FlameGame
     button = VirtualButton(
       cornerRadius: const Radius.circular(10),
       key: ComponentKey.named('button'),
-      size: Vector2(100, 50), 
-      position: Vector2(width / 2, height - 30)
+      size: Vector2(200, 200), 
+      position: Vector2(30, height - 30)
     );
     world.add(button);
 
@@ -148,7 +148,6 @@ class MobileAsteroids extends FlameGame
   @override 
   void onTapDown(int pointerId, TapDownInfo info) {
     super.onTapDown(pointerId, info);
-    tapIdsText.text = "Tap down!";
     if (button.containsPoint(info.eventPosition.widget)) {
       button.isPressed = true;
       buttonTapId = pointerId;
@@ -161,10 +160,7 @@ class MobileAsteroids extends FlameGame
   @override
   void onTapCancel(int pointerId) {
     super.onTapCancel(pointerId);
-    tapIdsText.text = "Tap cancel!";
-    if (!(pointerId == buttonTapId)) {
-      joystick.isVisible = false;
-    } else {
+    if (pointerId == buttonTapId) {
       button.isPressed = false;
     }
   }
@@ -172,10 +168,7 @@ class MobileAsteroids extends FlameGame
   @override
   void onTapUp(int pointerId, TapUpInfo info) {
     super.onTapUp(pointerId, info);
-    tapIdsText.text = "Tap up!";
-    if (!(pointerId == buttonTapId)) {
-      joystick.isVisible = false;
-    } else {
+    if (pointerId == buttonTapId) {
       button.isPressed = false;
     }
   }
@@ -185,6 +178,4 @@ class MobileAsteroids extends FlameGame
   void update(double dt) {
     super.update(dt);
   }
-
-
 }
