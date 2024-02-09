@@ -87,12 +87,12 @@ class Asteroids extends FlameGame
 
     debugMode = false;
     _playState = PlayState.debug;
-    gestureDebug();
+    //gestureDebug();
 
     // playState = PlayState.background;
     // animateBackground(true);
     
-    // layoutDebug();
+    layoutDebug();
   }
 
   void gestureDebug () {
@@ -386,8 +386,9 @@ class Asteroids extends FlameGame
       case PlayState.debug:
         //findByKeyName<Player>('player')!.angle = joystick.delta.screenAngle();
         //findByKeyName<Player>('player')!
-        dist.text = joystick.intensity.toString();
-        ang.text = (joystick.delta.screenAngle() * radians2Degrees).toString();
+        //dist.text = joystick.intensity.toString();
+        //ang.text = (joystick.delta.screenAngle() * radians2Degrees).toString();
+        break;
       case PlayState.background:
         countdown.update(dt);
         animateBackground(false);
