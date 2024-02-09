@@ -85,14 +85,12 @@ class Asteroids extends FlameGame
       testCfg = game_settings.GameCfg.mobile(width, height);
     }
 
-    debugMode = false;
-    _playState = PlayState.debug;
+    //debugMode = false;
+    //_playState = PlayState.debug;
     //gestureDebug();
 
-    // playState = PlayState.background;
-    // animateBackground(true);
-    
-    layoutDebug();
+    playState = PlayState.background;
+    animateBackground(true);
   }
 
   void gestureDebug () {
@@ -123,6 +121,7 @@ class Asteroids extends FlameGame
       isMobileGame: true,
     ));
 
+    // Virtual Joystick ('TestJoystick class')
     final knobPaint = BasicPalette.white.withAlpha(200).paint();
     final backgroundPaint = BasicPalette.white.withAlpha(100).paint();
     joystick = TestJoystick(
@@ -300,31 +299,26 @@ class Asteroids extends FlameGame
     lives = game_settings.playerLives;
 
     // setting up world constants
-    /*
     world.add(
       FpsTextComponent(
         position: Vector2(0, canvasSize.y),
         anchor: Anchor.bottomLeft,
       )
     );
-    */
+    
+    if (isMobile) {
+      final knobPaint = BasicPalette.white.withAlpha(200).paint();
+      final backgroundPaint = BasicPalette.white.withAlpha(100).paint();
+      joystick = TestJoystick(
+        key: ComponentKey.named('joystick'),
+        knob: CircleComponent(radius: 20, paint: knobPaint),
+        background: CircleComponent(radius: 50, paint: backgroundPaint),
+        position: size * (3 / 4),
+      );
+      joystick.isVisible = false;
+      world.add(joystick);
+    }
 
-    // WARN: DEBUG ONLY
-    tapTracker = TextComponent(
-                    key: ComponentKey.named('tap'), 
-                    text: '',
-                    position: Vector2(0, canvasSize.y),
-                    anchor: Anchor.bottomLeft);
-    world.add(tapTracker);
-
-    tapTracker2 = TextComponent(
-                    key: ComponentKey.named('tap2'), 
-                    text: '',
-                    position: Vector2(canvasSize.x / 2, canvasSize.y),
-                    anchor: Anchor.bottomCenter);
-    world.add(tapTracker2);
-
-    /*
     // player's ship
     Vector2 shipPos = Vector2(0, 0);
     shipPos.x = size.x * (1/2);
@@ -334,8 +328,8 @@ class Asteroids extends FlameGame
       position: shipPos,
       size : Vector2(testCfg.playerWidth, testCfg.playerHeight),
       shipType: ShipType.player,
+      isMobileGame: isMobile,
     ));
-    */
 
     // display score
     String formattedScore = score.toString().padLeft(4, '0');
@@ -365,6 +359,10 @@ class Asteroids extends FlameGame
       );
     }
 
+    // populate with an asteroid
+    generateRandomAsteroid();
+    generateRandomAsteroid();
+    generateRandomAsteroid();
   }
 
   @override
@@ -397,7 +395,6 @@ class Asteroids extends FlameGame
         scoreboard.text = score.toString().padLeft(4, '0');
         break;
     }
-
   }
 
   // TODO: Implement hyperdrive!
