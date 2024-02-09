@@ -19,7 +19,7 @@ import 'config.dart' as game_settings;
 game_settings.GameCfg testCfg = game_settings.GameCfg.desktop();
 
 class MobileAsteroids extends FlameGame
-  with MultiTouchTapDetector, HasCollisionDetection {
+  with TapDetector, HasCollisionDetection {
 
   // are we running on mobile?
   bool isMobile;
@@ -42,6 +42,7 @@ class MobileAsteroids extends FlameGame
   // gesture input
   late final TestJoystick joystick;
   late final HudButtonComponent buttonShoot;
+  late final ButtonComponent buttonComponent;
 
   @override
   FutureOr<void> onLoad() async {
@@ -86,18 +87,21 @@ class MobileAsteroids extends FlameGame
     world.add(joystick);
 
     // margin for world
+    /*
     HudMarginComponent testMargin = HudMarginComponent( 
       margin: const EdgeInsets.only(
         top: 10,
         left: 10,
       ),
     );
-    world.add(testMargin);
+    add(testMargin);
+    */
 
     // HUD button component
     final buttonUp = BasicPalette.white.withAlpha(200).paint();
     final buttonDown = BasicPalette.gray.withAlpha(200).paint();
     buttonShoot = HudButtonComponent( 
+      priority: 1,
       button: CircleComponent(
         radius: 50, 
         paint: buttonUp, 
@@ -111,8 +115,30 @@ class MobileAsteroids extends FlameGame
         left:  20, 
         bottom: 20
       ),
+      onPressed: () {print('hi');},
     );
     add(buttonShoot);
+
+    
+    // A button, created from a shape, that adds a scale effect to the player
+    // when it is pressed.
+    buttonComponent = ButtonComponent(
+      button: RectangleComponent(
+        size: Vector2(185, 50),
+        paint: Paint()
+          ..color = Colors.orange
+          ..style = PaintingStyle.stroke,
+      ),
+      buttonDown: RectangleComponent(
+        size: Vector2(185, 50),
+        paint: BasicPalette.magenta.paint(),
+      ),
+      position: Vector2(20, 300),
+      onPressed: () {
+        print('button press!');
+      }
+    );
+    world.add(buttonComponent);
     
     // debug info
     tapIdsText = TextComponent(
@@ -131,19 +157,63 @@ class MobileAsteroids extends FlameGame
   }
   
   // handling tap events
+  @override
+  void onTapDown(TapDownInfo info) {
+    super.onTapDown(info);
+    if (!buttonComponent.containsPoint(info.eventPosition.widget)) {
+      joystick.position = info.eventPosition.widget;
+      joystick.isVisible = true;
+    }
+  }
+
+  @override
+  void onTapCancel() {
+    super.onTapCancel();
+  }
+
+  @override
+  void onTapUp(TapUpInfo info) {
+    super.onTapUp(info);
+    if (!buttonComponent.containsPoint(info.eventPosition.widget)) {
+      joystick.isVisible = false;
+    }
+  }
+  /*
   @override 
   void onTapDown(int pointerId, TapDownInfo info) {
     super.onTapDown(pointerId, info);
+    if (!buttonComponent.containsPoint(info.eventPosition.widget)) {
+      joystick.position = info.eventPosition.widget;
+      joystick.isVisible = true;
+    }
+      /*
+     if (!buttonShoot.containsPoint(info.eventPosition.widget)) {
+      joystick.position = info.eventPosition.widget;
+      joystick.isVisible = true;
+    } else {
+      findByKeyName<Player>('player')!.fireShot = true; 
+    }
     tapIdsList.add(pointerId.toString());
-    tapPosList.add(info.eventPosition.widget.toString());
+    //tapPosList.add(info.eventPosition.widget.toString());
+    */
+  }
+
+  @override
+  void onTapCancel(int pointerId) {
+    super.onTapCancel(pointerId);
+    tapIdsList.remove(pointerId.toString());
   }
 
   @override
   void onTapUp(int pointerId, TapUpInfo info) {
     super.onTapUp(pointerId, info);
+    if (buttonShoot.containsPoint(info.eventPosition.widget)) {
+      findByKeyName<Player>('player')!.fireShot = false; 
+    }
     tapIdsList.remove(pointerId.toString());
-    tapPosList.remove(info.eventPosition.widget.toString());
+    //tapPosList.remove(info.eventPosition.widget.toString());
   }
+  */
 
   // main gameplay loop
   @override 
