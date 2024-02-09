@@ -11,7 +11,7 @@ import '../mobile_asteroids.dart';
 import 'components.dart';
 
 class TestJoystick extends JoystickComponent
-  with HasVisibility, HasGameRef<MobileAsteroids> {
+  with HasVisibility, TapCallbacks, HasGameRef<MobileAsteroids> {
 
   TestJoystick({
     required super.key,

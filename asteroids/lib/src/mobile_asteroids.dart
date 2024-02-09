@@ -39,6 +39,9 @@ class MobileAsteroids extends FlameGame
   List<String> tapIdsList = [];
   List<String> tapPosList = []; 
 
+  bool isJoystickActive = false;
+  bool isButtonActive = false;
+
   // gesture input
   late final TestJoystick joystick;
   late final HudButtonComponent buttonShoot;
@@ -160,7 +163,9 @@ class MobileAsteroids extends FlameGame
   @override
   void onTapDown(TapDownInfo info) {
     super.onTapDown(info);
+    tapIdsText.text = "Tap down!";
     if (!buttonComponent.containsPoint(info.eventPosition.widget)) {
+      isJoystickActive = true;
       joystick.position = info.eventPosition.widget;
       joystick.isVisible = true;
     }
@@ -169,12 +174,15 @@ class MobileAsteroids extends FlameGame
   @override
   void onTapCancel() {
     super.onTapCancel();
+    tapIdsText.text = "Tap cancel!";
   }
 
   @override
   void onTapUp(TapUpInfo info) {
     super.onTapUp(info);
+    tapIdsText.text = "Tap up!";
     if (!buttonComponent.containsPoint(info.eventPosition.widget)) {
+      isJoystickActive = false;
       joystick.isVisible = false;
     }
   }
@@ -219,8 +227,8 @@ class MobileAsteroids extends FlameGame
   @override 
   void update(double dt) {
     super.update(dt);
-    tapIdsText.text = tapIdsList.toString();
-    tapPosText.text = tapPosList.toString();
+    //tapIdsText.text = tapIdsList.toString();
+    //tapPosText.text = tapPosList.toString();
   }
 
 
