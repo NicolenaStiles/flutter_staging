@@ -19,7 +19,7 @@ import 'config.dart' as game_settings;
 game_settings.GameCfg testCfg = game_settings.GameCfg.desktop();
 
 class MobileAsteroids extends FlameGame
-  with TapDetector, HasCollisionDetection {
+  with MultiTouchTapDetector, HasCollisionDetection {
 
   // are we running on mobile?
   bool isMobile;
@@ -160,6 +160,7 @@ class MobileAsteroids extends FlameGame
   }
   
   // handling tap events
+  /*
   @override
   void onTapDown(TapDownInfo info) {
     super.onTapDown(info);
@@ -186,42 +187,36 @@ class MobileAsteroids extends FlameGame
       joystick.isVisible = false;
     }
   }
-  /*
+  */
+
   @override 
   void onTapDown(int pointerId, TapDownInfo info) {
     super.onTapDown(pointerId, info);
+    tapIdsText.text = "Tap down!";
     if (!buttonComponent.containsPoint(info.eventPosition.widget)) {
+      isJoystickActive = true;
       joystick.position = info.eventPosition.widget;
       joystick.isVisible = true;
     }
-      /*
-     if (!buttonShoot.containsPoint(info.eventPosition.widget)) {
-      joystick.position = info.eventPosition.widget;
-      joystick.isVisible = true;
-    } else {
-      findByKeyName<Player>('player')!.fireShot = true; 
-    }
-    tapIdsList.add(pointerId.toString());
-    //tapPosList.add(info.eventPosition.widget.toString());
-    */
   }
 
   @override
   void onTapCancel(int pointerId) {
     super.onTapCancel(pointerId);
+    tapIdsText.text = "Tap cancel!";
     tapIdsList.remove(pointerId.toString());
   }
 
   @override
   void onTapUp(int pointerId, TapUpInfo info) {
     super.onTapUp(pointerId, info);
+    tapIdsText.text = "Tap up!";
     if (buttonShoot.containsPoint(info.eventPosition.widget)) {
       findByKeyName<Player>('player')!.fireShot = false; 
     }
     tapIdsList.remove(pointerId.toString());
     //tapPosList.remove(info.eventPosition.widget.toString());
   }
-  */
 
   // main gameplay loop
   @override 
