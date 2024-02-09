@@ -7,6 +7,43 @@ import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
 
 import '../asteroids.dart';
+import 'components.dart';
+
+class TestJoystick extends JoystickComponent
+  with HasVisibility, HasGameRef<Asteroids> {
+
+  TestJoystick({
+    required super.key,
+    required super.knob,
+    required super.background,
+    required super.position
+  });
+
+  @override
+  bool onDragStart(DragStartEvent event) {
+    super.onDragStart(event);
+    game.findByKeyName<Player>('player')!.isJoystickActive = true;
+    isVisible = true;
+    return false;
+  }
+
+  @override
+  bool onDragUpdate(DragUpdateEvent event) {
+    super.onDragUpdate(event);
+    game.findByKeyName<Player>('player')!.mobileMove = relativeDelta;
+    game.findByKeyName<Player>('player')!.mobilePercent = intensity;
+    game.findByKeyName<Player>('player')!.angleRequest = relativeDelta.screenAngle();
+    return false;
+  }
+
+  @override
+  void onDragStop() {
+    super.onDragStop();
+    game.findByKeyName<Player>('player')!.isJoystickActive = false;
+    isVisible = false;
+  }
+
+}
 
 class VirtualJoystick extends PositionComponent 
   with HasVisibility, HasGameRef<Asteroids> {
@@ -92,7 +129,6 @@ class JoystickButton extends CircleComponent
     Vector2 newPos = position + event.localDelta;
     double newAng = atan2(-(newPos.x - centeredPoint.x), 
                           -(newPos.y - centeredPoint.y));
-    // distance calculations
     dist = newPos.distanceTo(centeredPoint);
     if (dist > maxDist) {
       newPos.x = maxDist * sin(newAng);

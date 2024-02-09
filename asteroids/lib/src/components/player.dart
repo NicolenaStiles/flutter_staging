@@ -1,5 +1,6 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/extensions.dart';
 
 import 'package:flutter/material.dart';
@@ -27,17 +28,19 @@ class Player extends PositionComponent
   // TODO: bespoke hitbox?
   Player({
     required this.shipType,
+    required this.isMobileGame,
     required super.key,
     required super.size,
     required super.position,
   }) : super ( 
-        anchor: Anchor.center,
-        children: [RectangleHitbox(isSolid: true)]
+    anchor: Anchor.center,
+    children: [RectangleHitbox(isSolid: true)]
   ) {
-        _graphicPath = completePath();
+    _graphicPath = completePath();
   }
 
   ShipType shipType;
+  final bool isMobileGame;
 
   @override 
   Future<void> onLoad() async {
@@ -45,10 +48,18 @@ class Player extends PositionComponent
     _graphicPath = completePath();
   }
 
+
   // movement input
   bool moveForward = false;
   bool rotateLeft = false;
   bool rotateRight = false;
+
+  // mobile support
+  bool isJoystickActive = false;
+  Vector2 mobileMove = Vector2.zero();
+  double mobilePercent = 0;
+  double angleRequest = 0;
+  static const double acceptableAngleError = 5; // in degrees
 
   // movement math
   double _playerLastImpulseAngle = 0;
@@ -99,6 +110,45 @@ class Player extends PositionComponent
     return graphicPath;
   }
 
+  void mobileTurn(double dt) {
+    if (!isJoystickActive) return; // only run if we're recieving input
+
+    // move to degrees 
+    double rA = angleRequest * radians2Degrees;
+    double cA = angle * radians2Degrees;
+
+    // calculate error
+    double eA = rA - cA;
+
+    if (eA > 180) {
+      eA -= 360;
+    } else if (eA < -180) {
+      eA += 360;
+    }
+
+    // exit early if we're under acceptable error
+    if (eA.abs() < acceptableAngleError) return;
+
+    // calculate next angle
+    double nA = 0;
+    if (eA > 0) {
+      nA = cA + game_settings.mobilePlayerRotatationSpeed * dt;
+    } else {
+      nA = cA - game_settings.mobilePlayerRotatationSpeed * dt;
+    }
+
+    // if next angle is outside of bounds,
+    // adjust within the (180/-180) limit
+    if (nA > 180) {
+      nA = (-180 + (nA % 180));
+    } else if (nA < -180) {
+      nA = (180 - (nA.abs() % 180));
+    }
+
+    // assign final value to angle
+    angle = nA * degrees2Radians;
+  }
+
   // handling rotation
   void turnLeft(double dt) {
     angle -= game_settings.playerRotationSpeed * dt;
@@ -145,7 +195,6 @@ class Player extends PositionComponent
         // actual position update
         position.add(_playerDisplacement);
 
-
       } else {
         _playerVelocityInitial = Vector2(0,0);
         _playerVelocityFinal= Vector2(0,0);
@@ -154,7 +203,62 @@ class Player extends PositionComponent
 
     // check wraparound
     checkWraparound();
+  }
 
+  void mobileMovePlayer(double dt) {
+
+    double xMove = sin(angle);
+    double yMove = 0 - cos(angle);
+
+    _playerDirection 
+    ..setValues(xMove,yMove)
+    ..normalize();
+    
+    //_playerDirection = mobileMove;
+    //print('Player direction: ${_playerDirection.toString()}');
+    //print('Mobile move: ${mobileMove.toString()}');
+    //print('Percentage power: ${mobilePercent.toString()}');
+
+    if (isJoystickActive) {
+
+      _playerLastImpulseAngle = angle;
+      _playerVelocityFinal = _playerVelocityInitial + (game_settings.mobilePlayerAcceleration * dt * mobilePercent);
+      _playerDisplacement[0] = _playerDirection[0] * _playerVelocityFinal[0];
+      _playerDisplacement[1] = _playerDirection[1] * _playerVelocityFinal[1];
+      _playerVelocityInitial = _playerVelocityFinal;
+
+      // actual position update
+      position.add(_playerDisplacement);
+
+    } else {
+
+      if (_playerVelocityFinal[0] > 0 && _playerVelocityFinal[1] > 0) {
+
+        _playerVelocityFinal = _playerVelocityInitial - (game_settings.mobilePlayerAcceleration * dt);
+        _playerDisplacement[0] = sin(_playerLastImpulseAngle) * _playerVelocityFinal[0];
+        _playerDisplacement[1] = (0 - cos(_playerLastImpulseAngle)) * _playerVelocityFinal[1];
+        _playerVelocityInitial = _playerVelocityFinal;
+
+        // actual position update
+        position.add(_playerDisplacement);
+
+      } else {
+        _playerVelocityInitial = Vector2(0,0);
+        _playerVelocityFinal= Vector2(0,0);
+      }
+    }
+
+    // TODO: test this max speed!
+    double maxPlayerVelocity = 4;
+    if (_playerVelocityFinal.x > maxPlayerVelocity) {
+      _playerVelocityFinal.x = maxPlayerVelocity;
+    }
+    if (_playerVelocityFinal.y > maxPlayerVelocity) {
+      _playerVelocityFinal.y = maxPlayerVelocity;
+    }
+
+    // check wraparound
+    checkWraparound();
   }
 
   // Checks if PositionComponent should wrap around the game screen
@@ -262,15 +366,6 @@ class Player extends PositionComponent
     }
   }
 
-  // TODO: touchscreen controls?
-  /*
-  @override
-  void onDragUpdate(DragUpdateEvent event) {
-    super.onDragUpdate(event);
-    lookAt(event.localDelta);
-  }
-  */
-
   @override
   void update(double dt) {
     super.update(dt);
@@ -279,20 +374,23 @@ class Player extends PositionComponent
       return;
     }
 
-    // rotation
-    if (rotateRight) { turnRight(dt); }
-    if (rotateLeft) { turnLeft(dt); }
+    if (isMobileGame) {
+      // movement and rotation
+      mobileTurn(dt);
+      mobileMovePlayer(dt);
+    } else {
+      // movement
+      movePlayer(dt);
 
-    // movement
-    movePlayer(dt);
+      // rotation
+      if (rotateRight) { turnRight(dt); }
+      if (rotateLeft) { turnLeft(dt); }
 
-    // shots: firing and managing cooldown
-    handleShot(fireShot);
+      // shots: firing and managing cooldown
+      handleShot(fireShot);
+    }
 
     // handle invulnerability 
     updateInvulnerability();
-
   }
-
-
 }
