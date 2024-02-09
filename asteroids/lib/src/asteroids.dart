@@ -106,7 +106,7 @@ class Asteroids extends FlameGame
       isMobileGame: true,
     ));
 
-    // Virtual Joystick ('TestJoystick class')
+    // Virtual Joystick ('TestJoystick' class)
     final knobPaint = BasicPalette.white.withAlpha(200).paint();
     final backgroundPaint = BasicPalette.white.withAlpha(100).paint();
     joystick = TestJoystick(
@@ -128,19 +128,34 @@ class Asteroids extends FlameGame
     world.add(testMargin);
 
     // HUD button component
+    final buttonUp = BasicPalette.white.withAlpha(200).paint();
+    final buttonDown = BasicPalette.gray.withAlpha(200).paint();
     buttonShoot = HudButtonComponent( 
       button: CircleComponent(
         radius: 50, 
-        paint: knobPaint
+        paint: buttonUp, 
+      ),
+      buttonDown: CircleComponent( 
+        radius: 50,
+        paint: buttonDown,
       ),
       size: Vector2(100, 100),
       margin: const EdgeInsets.only(
         left:  20, 
         bottom: 20
       ),
+      /*
       onPressed: () { 
         findByKeyName<Player>('player')!.fireShot = true; 
       },
+      onReleased: () {
+        print('I was released!');
+      },
+      onCancelled: () {
+        findByKeyName<Player>('player')!.fireShot = false; 
+        print('I was cancelled!');
+      }
+      */
     );
     add(buttonShoot);
   }
@@ -386,6 +401,8 @@ class Asteroids extends FlameGame
     if (!buttonShoot.containsPoint(info.eventPosition.widget)) {
       joystick.position = info.eventPosition.widget;
       joystick.isVisible = true;
+    } else {
+      findByKeyName<Player>('player')!.fireShot = true; 
     }
   }
 
