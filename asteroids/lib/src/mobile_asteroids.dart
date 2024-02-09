@@ -44,8 +44,7 @@ class MobileAsteroids extends FlameGame
 
   // gesture input
   late final TestJoystick joystick;
-  late final HudButtonComponent buttonShoot;
-  late final ButtonComponent buttonComponent;
+  late final VirtualButton button;
 
   @override
   FutureOr<void> onLoad() async {
@@ -89,60 +88,14 @@ class MobileAsteroids extends FlameGame
     joystick.isVisible = false;
     world.add(joystick);
 
-    // margin for world
-    /*
-    HudMarginComponent testMargin = HudMarginComponent( 
-      margin: const EdgeInsets.only(
-        top: 10,
-        left: 10,
-      ),
+    button = VirtualButton(
+      cornerRadius: const Radius.circular(10),
+      key: ComponentKey.named('button'),
+      size: Vector2(100, 50), 
+      position: Vector2(width / 2, height - 30)
     );
-    add(testMargin);
-    */
+    world.add(button);
 
-    // HUD button component
-    final buttonUp = BasicPalette.white.withAlpha(200).paint();
-    final buttonDown = BasicPalette.gray.withAlpha(200).paint();
-    buttonShoot = HudButtonComponent( 
-      priority: 1,
-      button: CircleComponent(
-        radius: 50, 
-        paint: buttonUp, 
-      ),
-      buttonDown: CircleComponent( 
-        radius: 50,
-        paint: buttonDown,
-      ),
-      size: Vector2(100, 100),
-      margin: const EdgeInsets.only(
-        left:  20, 
-        bottom: 20
-      ),
-      onPressed: () {print('hi');},
-    );
-    add(buttonShoot);
-
-    
-    // A button, created from a shape, that adds a scale effect to the player
-    // when it is pressed.
-    buttonComponent = ButtonComponent(
-      button: RectangleComponent(
-        size: Vector2(185, 50),
-        paint: Paint()
-          ..color = Colors.orange
-          ..style = PaintingStyle.stroke,
-      ),
-      buttonDown: RectangleComponent(
-        size: Vector2(185, 50),
-        paint: BasicPalette.magenta.paint(),
-      ),
-      position: Vector2(20, 300),
-      onPressed: () {
-        print('button press!');
-      }
-    );
-    world.add(buttonComponent);
-    
     // debug info
     tapIdsText = TextComponent(
         key: ComponentKey.named('tapIds'),
@@ -189,12 +142,17 @@ class MobileAsteroids extends FlameGame
   }
   */
 
+  // tracks which tap accessed button
+  int buttonTapId = 0;
+
   @override 
   void onTapDown(int pointerId, TapDownInfo info) {
     super.onTapDown(pointerId, info);
     tapIdsText.text = "Tap down!";
-    if (!buttonComponent.containsPoint(info.eventPosition.widget)) {
-      isJoystickActive = true;
+    if (button.containsPoint(info.eventPosition.widget)) {
+      button.isPressed = true;
+      buttonTapId = pointerId;
+    } else {
       joystick.position = info.eventPosition.widget;
       joystick.isVisible = true;
     }
@@ -204,26 +162,28 @@ class MobileAsteroids extends FlameGame
   void onTapCancel(int pointerId) {
     super.onTapCancel(pointerId);
     tapIdsText.text = "Tap cancel!";
-    tapIdsList.remove(pointerId.toString());
+    if (!(pointerId == buttonTapId)) {
+      joystick.isVisible = false;
+    } else {
+      button.isPressed = false;
+    }
   }
 
   @override
   void onTapUp(int pointerId, TapUpInfo info) {
     super.onTapUp(pointerId, info);
     tapIdsText.text = "Tap up!";
-    if (buttonShoot.containsPoint(info.eventPosition.widget)) {
-      findByKeyName<Player>('player')!.fireShot = false; 
+    if (!(pointerId == buttonTapId)) {
+      joystick.isVisible = false;
+    } else {
+      button.isPressed = false;
     }
-    tapIdsList.remove(pointerId.toString());
-    //tapPosList.remove(info.eventPosition.widget.toString());
   }
 
   // main gameplay loop
   @override 
   void update(double dt) {
     super.update(dt);
-    //tapIdsText.text = tapIdsList.toString();
-    //tapPosText.text = tapPosList.toString();
   }
 
 
