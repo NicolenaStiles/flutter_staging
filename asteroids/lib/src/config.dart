@@ -75,7 +75,7 @@ class GameCfg {
 }
 
 // TODO: change this into an upper and lower bound instead
- double asteroidSpeed = 120.0;
+double asteroidSpeed = 120.0;
 
 double livesWidth = 30;
 double livesHeight = 42;

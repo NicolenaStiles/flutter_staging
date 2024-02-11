@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 
 import 'dart:math';
 
-// import '../asteroids.dart';
-import '../mobile_asteroids.dart';
+import '../asteroids.dart';
+//import '../mobile_asteroids.dart';
 import '../config.dart' as game_settings;
 import '../components/components.dart';
 
 class Shot extends CircleComponent 
-  with CollisionCallbacks, HasGameRef<MobileAsteroids> {
+  with CollisionCallbacks, HasGameRef<Asteroids> {
 
   Shot({
     required super.position,
