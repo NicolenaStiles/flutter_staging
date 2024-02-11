@@ -21,7 +21,7 @@ game_settings.GameCfg testCfg = game_settings.GameCfg.desktop();
 
 // enum PlayState {background, welcome, play, gameOver, won}
 // debug is only temp here
-enum PlayState { debug, background, play }
+enum PlayState { debug, background, play, gameOver, gameWon }
 
 class Asteroids extends FlameGame
   with MultiTouchTapDetector, KeyboardEvents, HasCollisionDetection {
@@ -52,15 +52,22 @@ class Asteroids extends FlameGame
   late Timer countdown;
 
   // managing game state
-  // mostly for controlling overlays tbh
+  // TODO: add overlay logic here
   late PlayState _playState;
   PlayState get playState => _playState;
   set playState(PlayState playState) {
     _playState = playState;
     switch (playState) {
       case PlayState.debug:
+      break;
       case PlayState.background:
+      break;
       case PlayState.play:
+      break;
+      case PlayState.gameOver:
+      break;
+      case PlayState.gameWon:
+      break;
     }
   }
 
@@ -71,20 +78,14 @@ class Asteroids extends FlameGame
     camera.viewfinder.anchor = Anchor.topLeft;
 
     // populate config object with appropriate settings
-    // WARN: debug only
-    isMobile = true;
     if (!isMobile) {
       testCfg = game_settings.GameCfg.desktop();
     } else {
       testCfg = game_settings.GameCfg.mobile(width, height);
     }
 
-    //debugMode = false;
-    _playState = PlayState.debug;
-    layoutHUDDebug();
-
-    //playState = PlayState.background;
-    //animateBackground(true);
+    playState = PlayState.background;
+    animateBackground(true);
   }
 
   // testing gesture layout stuff
@@ -196,6 +197,8 @@ class Asteroids extends FlameGame
   
   // Mobile only: Add gesture control elements
   // adding joystick
+  //
+  // component name : 'joystick'
   void addJoystick() {
 
     joystick = Joystick(
@@ -207,8 +210,7 @@ class Asteroids extends FlameGame
   }
 
   // adding buttons to the HUD
-  // TODO: component key names?
-  // TODO: where do I manage state?
+  // no component keys here :(
   void addHudButtons() {
 
     double radius = 20;
@@ -239,12 +241,14 @@ class Asteroids extends FlameGame
   // Game components: player, joystick, etc.
   // adding player ship to the game
   // edit "shipPos" to change where it spawns in
+  //
+  // component name : 'player'
   void addPlayerShip() {
 
     // player's ship
     Vector2 shipPos = Vector2(0, 0);
     shipPos.x = size.x * (1/2);
-    shipPos.y = size.y * (4/5);
+    shipPos.y = size.y * (1/2);
     world.add(Player(
       key: ComponentKey.named('player'),
       position: shipPos,
@@ -325,6 +329,7 @@ class Asteroids extends FlameGame
     }
   }
 
+  // stand up and start game
   void startGame() {
 
     // ignore call here if already playing
@@ -337,24 +342,8 @@ class Asteroids extends FlameGame
 
     score = 0;
     lives = game_settings.playerLives;
-
-    // setting up world constants
-    world.add(
-      FpsTextComponent(
-        position: Vector2(0, canvasSize.y),
-        anchor: Anchor.bottomLeft,
-      )
-    );
-    
-    if (isMobile) {
-      joystick = Joystick(
-        key: ComponentKey.named('joystick'),
-        position: size * (3 / 4),
-      );
-      joystick.isVisible = false;
-      world.add(joystick);
-    }
-
+    numAsteroids = 0;
+    countdown.stop();
 
     // display score
     addScoreboard();
@@ -362,10 +351,29 @@ class Asteroids extends FlameGame
     // lives tracker
     addLivesTracker();
 
-    // populate with an asteroid
-    generateRandomAsteroid();
-    generateRandomAsteroid();
-    generateRandomAsteroid();
+    // add controls for mobile
+    if (isMobile) {
+      addJoystick();
+      addHudButtons();
+    }
+
+    // add player
+    addPlayerShip();
+  }
+
+  // main loop for gameplay
+  int maxAsteroids = 10;
+  void gameplayLoop() {
+
+    if (countdown.isRunning()) return;
+
+    if (numAsteroids < maxAsteroids) {
+      countdown = Timer(rand.nextInt(4).toDouble());
+      generateRandomAsteroid();
+      countdown.start();
+    } else {
+      numAsteroids = 0;
+    }
   }
 
   // tracks which tap accessed button
@@ -375,6 +383,8 @@ class Asteroids extends FlameGame
   @override 
   void onTapDown(int pointerId, TapDownInfo info) {
     super.onTapDown(pointerId, info);
+
+    // gameplay input controls
     if (buttonShoot.containsPoint(info.eventPosition.widget)) {
       buttonShoot.isPressed = true;
       shootButtonTapId = pointerId;
@@ -391,6 +401,8 @@ class Asteroids extends FlameGame
   @override
   void onTapCancel(int pointerId) {
     super.onTapCancel(pointerId);
+
+    // gameplay input controls
     if (pointerId == shootButtonTapId && buttonShoot.isPressed == true) {
       buttonShoot.isPressed = false;
       shootButtonTapId = 0;
@@ -403,6 +415,13 @@ class Asteroids extends FlameGame
   @override
   void onTapUp(int pointerId, TapUpInfo info) {
     super.onTapUp(pointerId, info);
+
+    // start game if running in background on tap
+    if (_playState == PlayState.background) {
+      startGame();
+    }
+
+    // gameplay input controls
     if (pointerId == shootButtonTapId && buttonShoot.isPressed == true) {
       buttonShoot.isPressed = false;
       shootButtonTapId = 0;
@@ -412,32 +431,6 @@ class Asteroids extends FlameGame
     }
   }
 
-  // previous
-  /*
-  @override
-  void onTapDown(TapDownInfo info) {
-    super.onTapDown(info);
-    if (_playState == PlayState.background) {
-      startGame();
-      return;
-    }
-    if (!buttonShoot.containsPoint(info.eventPosition.widget)) {
-      joystick.position = info.eventPosition.widget;
-      joystick.isVisible = true;
-    } else {
-      findByKeyName<Player>('player')!.fireShot = true; 
-    }
-  }
-
-  @override
-  void onTapUp(TapUpInfo info) {
-    super.onTapUp(info);
-    if (buttonShoot.containsPoint(info.eventPosition.widget)) {
-      findByKeyName<Player>('player')!.fireShot = false; 
-    }
-  }
-  */
-
   // main gameplay loop
   @override 
   void update(double dt) {
@@ -445,15 +438,19 @@ class Asteroids extends FlameGame
 
     switch (_playState) {
       case PlayState.debug:
-        //findByKeyName<Player>('player')!.angle = joystick.delta.screenAngle();
-        //findByKeyName<Player>('player')!
         break;
       case PlayState.background:
         countdown.update(dt);
         animateBackground(false);
         break;
       case PlayState.play:
+        countdown.update(dt);
+        gameplayLoop();
         findByKeyName<TextComponent>('scoreboard')!.text = score.toString().padLeft(4, '0');
+        break;
+      case PlayState.gameOver:
+        break;
+      case PlayState.gameWon:
         break;
     }
   }
@@ -476,18 +473,14 @@ class Asteroids extends FlameGame
         // movement
         case LogicalKeyboardKey.keyW: 
           findByKeyName<Player>('player')!.moveForward = true;
-          //world.children.query<Player>().first.moveForward = true;
         // rotation
         case LogicalKeyboardKey.keyA: 
           findByKeyName<Player>('player')!.rotateLeft = true;
-          //world.children.query<Player>().first.rotateLeft = true;
         case LogicalKeyboardKey.keyD: 
           findByKeyName<Player>('player')!.rotateRight = true;
-          //world.children.query<Player>().first.rotateRight = true;
         // shooting
         case LogicalKeyboardKey.space: 
           findByKeyName<Player>('player')!.fireShot = true;
-          //world.children.query<Player>().first.fireShot = true;
         case LogicalKeyboardKey.enter:
           startGame();
       } 
@@ -497,18 +490,14 @@ class Asteroids extends FlameGame
         // movement
         case LogicalKeyboardKey.keyW: 
           findByKeyName<Player>('player')!.moveForward = false;
-          //world.children.query<Player>().first.moveForward = false;
         // rotation
         case LogicalKeyboardKey.keyA: 
           findByKeyName<Player>('player')!.rotateLeft = false;
-          //world.children.query<Player>().first.rotateLeft = false;
         case LogicalKeyboardKey.keyD: 
           findByKeyName<Player>('player')!.rotateRight = false;
-          //world.children.query<Player>().first.rotateRight = false;
         // shooting
         case LogicalKeyboardKey.space: 
           findByKeyName<Player>('player')!.fireShot = false;
-          //world.children.query<Player>().first.fireShot = false;
       }
     }
     return KeyEventResult.handled;

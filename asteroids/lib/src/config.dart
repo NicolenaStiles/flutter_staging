@@ -4,6 +4,7 @@ import 'package:flame/game.dart';
 // lives outside of platform-related stuff
 const int respawnTimer = 30; 
 const int playerLives = 3;
+const int maxScore = 9999;
 const int largeAsteroidPoints = 200;
 const int mediumAsteroidPoints = 100;
 const int smallAsteroidPoints = 50;
@@ -95,9 +96,9 @@ int playerMaxSpeed = 400;                       // untested
 
 // shot
 const double shotRadiusDesktop = 4;
-const double shotSpeed = 600;        // how fast bullets go
-const double shotTimer = 80;        // how long bullets live
-const double shotCooldown = 16;      // how long until shoot bullets
+const double shotSpeed = 1024;        // how fast bullets go
+const double shotTimer = 80;          // how long bullets live
+const double shotCooldown = 16;       // how long until shoot bullets
 
 // alien
 // WARN : I pulled these numbers out of my ass
