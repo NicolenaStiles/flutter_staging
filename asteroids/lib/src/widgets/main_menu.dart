@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import '../asteroids.dart';
@@ -17,14 +19,30 @@ class MainMenu extends StatefulWidget {
 // TODO: resize this dynamically on mobile
 class _MainMenuState extends State<MainMenu> {
 
+  TextStyle _buttonTextStyle = TextStyle();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Dimensions in logical pixels (dp)
+    Size size = MediaQuery.of(context).size;
+    double width = size.width;
+    double height = size.height;
+
+    if (width < 500) {
+      _buttonTextStyle = Theme.of(context).textTheme.bodyMedium!;
+    } else  {
+      _buttonTextStyle = Theme.of(context).textTheme.titleMedium!;
+    }
+  }
+
   @override 
   Widget build(BuildContext context) {
     return Center ( 
       child: Container( 
         constraints: const BoxConstraints(
-          minWidth: 375,
           maxWidth: 512,
-          minHeight: 375,
           maxHeight: 512,
         ),
         padding: const EdgeInsets.all(10),
@@ -61,7 +79,7 @@ class _MainMenuState extends State<MainMenu> {
                         width: 2))),
                   child: 
                     Text('start game',
-                      style: Theme.of(context).textTheme.titleMedium),
+                      style: _buttonTextStyle),
                     ),
 
                 // leaderboard 
@@ -77,7 +95,7 @@ class _MainMenuState extends State<MainMenu> {
                         width: 2))),
                   child: 
                     Text('leaderboard',
-                      style: Theme.of(context).textTheme.titleMedium),
+                      style: _buttonTextStyle),
                     ),
               ],
             ),
