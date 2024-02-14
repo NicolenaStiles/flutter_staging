@@ -1,6 +1,6 @@
 {
-    "name": "asteroids",
-    "short_name": "asteroids",
+    "name": "window_resize_test",
+    "short_name": "window_resize_test",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
