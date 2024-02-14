@@ -12,7 +12,11 @@ import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+// global state management
+import '../src/api/site_state.dart';
+
 // player, asteroid, shot 
+import 'package:get_it/get_it.dart';
 import 'components/components.dart';
 
 // configuration
@@ -21,13 +25,14 @@ game_settings.GameCfg testCfg = game_settings.GameCfg.desktop();
 
 // enum PlayState {background, welcome, play, gameOver, won}
 // debug is only temp here
-enum PlayState { debug, background, play, gameOver, gameWon }
+enum PlayState { debug, background, mainMenu, tutorial, play, gameOver}
+
+GetIt getIt = GetIt.instance;
 
 class Asteroids extends FlameGame
   with MultiTouchTapDetector, KeyboardEvents, HasCollisionDetection {
 
-  bool isMobile;
-  Asteroids(this.isMobile);
+  bool isMobile = false;
 
   final rand = math.Random();
   double get width => size.x;
@@ -58,15 +63,22 @@ class Asteroids extends FlameGame
     _playState = playState;
     switch (playState) {
       case PlayState.debug:
-      break;
+        break;
       case PlayState.background:
-      break;
+        overlays.remove(PlayState.mainMenu.name);
+        break;
+      case PlayState.mainMenu:
+        overlays.add(playState.name);
+        break;
+      case PlayState.tutorial:
+        overlays.remove(PlayState.mainMenu.name);
+        break;
       case PlayState.play:
-      break;
+        overlays.remove(PlayState.mainMenu.name);
+        //overlays.remove(PlayState.tutorial.name);
+        break;
       case PlayState.gameOver:
-      break;
-      case PlayState.gameWon:
-      break;
+        break;
     }
   }
 
@@ -75,15 +87,21 @@ class Asteroids extends FlameGame
     super.onLoad();
 
     camera.viewfinder.anchor = Anchor.topLeft;
-
+ 
+    // WARN: debug only
     // populate config object with appropriate settings
+    isMobile = getIt<SiteState>().isMobile;
+
+    // WARN: debug only
+    getIt<SiteState>().testState();
+
     if (!isMobile) {
       testCfg = game_settings.GameCfg.desktop();
     } else {
       testCfg = game_settings.GameCfg.mobile(width, height);
     }
 
-    playState = PlayState.background;
+    playState = PlayState.mainMenu;
     animateBackground(true);
   }
 
@@ -373,6 +391,7 @@ class Asteroids extends FlameGame
     if (buttonShoot.containsPoint(info.eventPosition.widget)) {
       buttonShoot.isPressed = true;
       shootButtonTapId = pointerId;
+
     } else if (!isJoystickActive) {
       joystick.position = info.eventPosition.widget;
       joystick.isVisible = true;
@@ -407,6 +426,7 @@ class Asteroids extends FlameGame
     }
   }
 
+
   // main gameplay loop
   @override 
   void update(double dt) {
@@ -415,21 +435,34 @@ class Asteroids extends FlameGame
     switch (_playState) {
       case PlayState.debug:
         break;
+
       case PlayState.background:
         countdown.update(dt);
         animateBackground(false);
         numAsteroids = world.children.query<Asteroid>().length;
         break;
+
+      case PlayState.mainMenu:
+        countdown.update(dt);
+        animateBackground(false);
+        numAsteroids = world.children.query<Asteroid>().length;
+        break;
+
+      // TODO: manage tutorial update
+      case PlayState.tutorial:
+      break;
+
       case PlayState.play:
         countdown.update(dt);
         gameplayLoop();
         findByKeyName<TextComponent>('scoreboard')!.text = score.toString().padLeft(4, '0');
         numAsteroids = world.children.query<Asteroid>().length;
         break;
+
+      // TODO: manage game over update
       case PlayState.gameOver:
         break;
-      case PlayState.gameWon:
-        break;
+
     }
   }
 
@@ -450,32 +483,57 @@ class Asteroids extends FlameGame
       switch (event.logicalKey) {
         // movement
         case LogicalKeyboardKey.keyW: 
-          findByKeyName<Player>('player')!.moveForward = true;
+          if (_playState == PlayState.play) {
+            findByKeyName<Player>('player')!.moveForward = true; }
+
         // rotation
         case LogicalKeyboardKey.keyA: 
-          findByKeyName<Player>('player')!.rotateLeft = true;
+          if (_playState == PlayState.play) {
+            findByKeyName<Player>('player')!.rotateLeft = true; }
+
         case LogicalKeyboardKey.keyD: 
-          findByKeyName<Player>('player')!.rotateRight = true;
+          if (_playState == PlayState.play) {
+            findByKeyName<Player>('player')!.rotateRight = true; }
+
         // shooting
         case LogicalKeyboardKey.space: 
-          findByKeyName<Player>('player')!.fireShot = true;
-        case LogicalKeyboardKey.enter:
-          startGame();
-      } 
+          if (_playState == PlayState.play) {
+            findByKeyName<Player>('player')!.fireShot = true; }
+          else if (_playState == PlayState.background) {
+            startGame(); }
 
+      } 
     } else if (isKeyUp) {
       switch (event.logicalKey) {
+
         // movement
         case LogicalKeyboardKey.keyW: 
-          findByKeyName<Player>('player')!.moveForward = false;
+          if (_playState == PlayState.play) {
+            findByKeyName<Player>('player')!.moveForward = false; }
+
         // rotation
         case LogicalKeyboardKey.keyA: 
-          findByKeyName<Player>('player')!.rotateLeft = false;
+          if (_playState == PlayState.play) {
+            findByKeyName<Player>('player')!.rotateLeft = false; }
+
         case LogicalKeyboardKey.keyD: 
-          findByKeyName<Player>('player')!.rotateRight = false;
+          if (_playState == PlayState.play) {
+            findByKeyName<Player>('player')!.rotateRight = false; }
+
         // shooting
         case LogicalKeyboardKey.space: 
-          findByKeyName<Player>('player')!.fireShot = false;
+          if (_playState == PlayState.play) {
+            findByKeyName<Player>('player')!.fireShot = false; }
+          else if (_playState == PlayState.background) {
+            startGame(); }
+
+        // start playing game
+        // WARN: only works for background -> start, no support for new game
+        case LogicalKeyboardKey.enter:
+          if (_playState == PlayState.background) {
+            startGame(); 
+          }
+
       }
     }
     return KeyEventResult.handled;

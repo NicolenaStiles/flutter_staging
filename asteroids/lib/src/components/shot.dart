@@ -1,9 +1,11 @@
+// flame game-related stuff
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:math';
 
+// custom components 
 import '../asteroids.dart';
 import '../components/components.dart';
 
