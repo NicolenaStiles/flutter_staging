@@ -20,6 +20,7 @@ class MainMenu extends StatefulWidget {
 class _MainMenuState extends State<MainMenu> {
 
   TextStyle _buttonTextStyle = TextStyle();
+  MaterialStatePropertyAll _buttonPadding = MaterialStatePropertyAll(1);
 
   @override
   void initState() {
@@ -32,8 +33,10 @@ class _MainMenuState extends State<MainMenu> {
 
     if (width < 500) {
       _buttonTextStyle = Theme.of(context).textTheme.bodyMedium!;
+      _buttonPadding = MaterialStatePropertyAll(EdgeInsets.all(5));
     } else  {
       _buttonTextStyle = Theme.of(context).textTheme.titleMedium!;
+      _buttonPadding = MaterialStatePropertyAll(EdgeInsets.all(20));
     }
   }
 
