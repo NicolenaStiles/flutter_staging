@@ -33,7 +33,7 @@ class _MainMenuState extends State<MainMenu> {
 
     if (width < 500) {
       _buttonTextStyle = Theme.of(context).textTheme.bodyMedium!;
-      _buttonPaddingInset = 5;
+      _buttonPaddingInset = 10;
     } else  {
       _buttonTextStyle = Theme.of(context).textTheme.titleMedium!;
       _buttonPaddingInset = 20;
@@ -50,7 +50,7 @@ class _MainMenuState extends State<MainMenu> {
         ),
         padding: const EdgeInsets.all(10),
         child: Column( 
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [ 
     
