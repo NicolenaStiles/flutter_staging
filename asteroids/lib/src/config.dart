@@ -4,7 +4,6 @@ import 'package:flame/game.dart';
 // lives outside of platform-related stuff
 const int respawnTimer = 30; 
 const int playerLives = 3;
-const int maxScore = 9999;
 const int largeAsteroidPoints = 200;
 const int mediumAsteroidPoints = 100;
 const int smallAsteroidPoints = 50;

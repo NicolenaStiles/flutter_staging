@@ -7,7 +7,6 @@ import 'package:get_it/get_it.dart';
 import 'src/api/site_state.dart';
 
 import 'src/widgets/game_app.dart';
-//import 'src/asteroids.dart';
 //import 'src/mobile_asteroids.dart';
 
 
@@ -24,10 +23,5 @@ void main() {
 
   getIt<SiteState>().isMobile = isMobile;
 
-  runApp(GameApp(isMobile: isMobile));
-  /*
-  // final game = Asteroids(isMobile);
-  final game = Asteroids(isMobile);
-  runApp(GameWidget(game: game));
-  */
+  runApp(const GameApp());
 }

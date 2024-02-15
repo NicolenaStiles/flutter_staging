@@ -426,12 +426,6 @@ class Asteroids extends FlameGame
     // lives tracker
     addLivesTracker();
 
-    // add controls for mobile
-    if (isMobile) {
-      addJoystick();
-      addHudButtons();
-    }
-
     // add player
     addPlayerShip();
   }
@@ -478,9 +472,11 @@ class Asteroids extends FlameGame
 
       case PlayState.replay:
         startReplay();
+        break;
 
-      // TODO: manage game over update
       case PlayState.gameOver:
+        joystick.isVisible = false;
+        isJoystickActive = false;
         break;
 
     }
@@ -516,8 +512,10 @@ class Asteroids extends FlameGame
         }
         return;
       case PlayState.replay:
+        shootButtonTapId = 0;
         return;
       case PlayState.gameOver:
+        buttonShoot.isPressed = false;
         return;
     }
   }
@@ -547,6 +545,7 @@ class Asteroids extends FlameGame
       case PlayState.replay:
         return;
       case PlayState.gameOver:
+        buttonShoot.isPressed = false;
         return;
     }
   }
@@ -578,12 +577,12 @@ class Asteroids extends FlameGame
       case PlayState.replay:
         return;
       case PlayState.gameOver:
+        buttonShoot.isPressed = false;
         return;
     }
   }
 
   // TODO: Implement hyperdrive!
-  // TODO: handle misclicks/incorrect keypress/taps
   @override
   KeyEventResult onKeyEvent( 
     RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
