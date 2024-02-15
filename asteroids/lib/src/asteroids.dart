@@ -492,6 +492,11 @@ class Asteroids extends FlameGame
   void onTapDown(int pointerId, TapDownInfo info) {
     super.onTapDown(pointerId, info);
 
+    if (_playState == PlayState.background ||
+        _playState == PlayState.tutorial) {
+        return; 
+    }
+
     // gameplay input controls
     if (buttonShoot.containsPoint(info.eventPosition.widget)) {
       buttonShoot.isPressed = true;
@@ -520,7 +525,8 @@ class Asteroids extends FlameGame
     super.onTapUp(pointerId, info);
 
     // start game if running in background on tap
-    if (_playState == PlayState.background) {
+    if (_playState == PlayState.background ||
+        _playState == PlayState.tutorial) {
       startGame();
     }
 
