@@ -19,8 +19,8 @@ class MainMenu extends StatefulWidget {
 // TODO: resize this dynamically on mobile
 class _MainMenuState extends State<MainMenu> {
 
+  double _buttonPaddingInset = 0;
   TextStyle _buttonTextStyle = TextStyle();
-  MaterialStatePropertyAll _buttonPadding = MaterialStatePropertyAll(1);
 
   @override
   void initState() {
@@ -33,10 +33,10 @@ class _MainMenuState extends State<MainMenu> {
 
     if (width < 500) {
       _buttonTextStyle = Theme.of(context).textTheme.bodyMedium!;
-      _buttonPadding = MaterialStatePropertyAll(EdgeInsets.all(5));
+      _buttonPaddingInset = 5;
     } else  {
       _buttonTextStyle = Theme.of(context).textTheme.titleMedium!;
-      _buttonPadding = MaterialStatePropertyAll(EdgeInsets.all(20));
+      _buttonPaddingInset = 20;
     }
   }
 
@@ -74,9 +74,9 @@ class _MainMenuState extends State<MainMenu> {
                   onPressed: () {
                     widget.game.playState = PlayState.tutorial; 
                   },
-                  style: const ButtonStyle(
-                    padding: MaterialStatePropertyAll(EdgeInsets.all(20)),
-                    side: MaterialStatePropertyAll(
+                  style: ButtonStyle(
+                    padding: MaterialStatePropertyAll(EdgeInsets.all(_buttonPaddingInset)),
+                    side: const MaterialStatePropertyAll(
                       BorderSide(
                         color: Colors.white, 
                         width: 2))),
@@ -90,9 +90,9 @@ class _MainMenuState extends State<MainMenu> {
                   onPressed: () {
                     widget.game.playState = PlayState.leaderboard; 
                   },
-                  style: const ButtonStyle(
-                    padding: MaterialStatePropertyAll(EdgeInsets.all(20)),
-                    side: MaterialStatePropertyAll(
+                  style: ButtonStyle(
+                    padding: MaterialStatePropertyAll(EdgeInsets.all(_buttonPaddingInset)),
+                    side: const MaterialStatePropertyAll(
                       BorderSide(
                         color: Colors.white, 
                         width: 2))),
