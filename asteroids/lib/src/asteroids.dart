@@ -492,20 +492,33 @@ class Asteroids extends FlameGame
   void onTapDown(int pointerId, TapDownInfo info) {
     super.onTapDown(pointerId, info);
 
-    if (_playState == PlayState.background ||
-        _playState == PlayState.tutorial) {
-        return; 
-    }
+    switch (_playState) {
+      case PlayState.debug:
+        return;
+      case PlayState.background:
+        return;
+      case PlayState.mainMenu:
+        return;
+      case PlayState.leaderboard:
+        return;
+      case PlayState.tutorial:
+        return;
+      case PlayState.play:
+        // gameplay input controls
+        if (buttonShoot.containsPoint(info.eventPosition.widget)) {
+          buttonShoot.isPressed = true;
+          shootButtonTapId = pointerId;
 
-    // gameplay input controls
-    if (buttonShoot.containsPoint(info.eventPosition.widget)) {
-      buttonShoot.isPressed = true;
-      shootButtonTapId = pointerId;
-
-    } else if (!isJoystickActive) {
-      joystick.position = info.eventPosition.widget;
-      joystick.isVisible = true;
-      isJoystickActive = true;
+        } else if (!isJoystickActive) {
+          joystick.position = info.eventPosition.widget;
+          joystick.isVisible = true;
+          isJoystickActive = true;
+        }
+        return;
+      case PlayState.replay:
+        return;
+      case PlayState.gameOver:
+        return;
     }
   }
 
@@ -513,10 +526,28 @@ class Asteroids extends FlameGame
   void onTapCancel(int pointerId) {
     super.onTapCancel(pointerId);
 
-    // gameplay input controls
-    if (pointerId == shootButtonTapId && buttonShoot.isPressed == true) {
-      buttonShoot.isPressed = false;
-      shootButtonTapId = 0;
+    switch (_playState) {
+      case PlayState.debug:
+        return;
+      case PlayState.background:
+        return;
+      case PlayState.mainMenu:
+        return;
+      case PlayState.leaderboard:
+        return;
+      case PlayState.tutorial:
+        return;
+      case PlayState.play:
+        // gameplay input controls
+        if (pointerId == shootButtonTapId && buttonShoot.isPressed == true) {
+          buttonShoot.isPressed = false;
+          shootButtonTapId = 0;
+        }
+        return;
+      case PlayState.replay:
+        return;
+      case PlayState.gameOver:
+        return;
     }
   }
 
@@ -524,16 +555,30 @@ class Asteroids extends FlameGame
   void onTapUp(int pointerId, TapUpInfo info) {
     super.onTapUp(pointerId, info);
 
-    // start game if running in background on tap
-    if (_playState == PlayState.background ||
-        _playState == PlayState.tutorial) {
-      startGame();
-    }
-
-    // gameplay input controls
-    if (pointerId == shootButtonTapId && buttonShoot.isPressed == true) {
-      buttonShoot.isPressed = false;
-      shootButtonTapId = 0;
+    switch (_playState) {
+      case PlayState.debug:
+        return;
+      case PlayState.background:
+        startGame();
+        return;
+      case PlayState.mainMenu:
+        return;
+      case PlayState.leaderboard:
+        return;
+      case PlayState.tutorial:
+        startGame();
+        return;
+      case PlayState.play:
+        // gameplay input controls
+        if (pointerId == shootButtonTapId && buttonShoot.isPressed == true) {
+          buttonShoot.isPressed = false;
+          shootButtonTapId = 0;
+        }
+        return;
+      case PlayState.replay:
+        return;
+      case PlayState.gameOver:
+        return;
     }
   }
 
