@@ -112,9 +112,6 @@ class Asteroids extends FlameGame
     // populate config object with appropriate settings
     isMobile = getIt<SiteState>().isMobile;
 
-    // WARN: debug only
-    getIt<SiteState>().testState();
-
     if (!isMobile) {
       testCfg = game_settings.GameCfg.desktop();
     } else {

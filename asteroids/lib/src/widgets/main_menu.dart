@@ -22,16 +22,17 @@ class _MainMenuState extends State<MainMenu> {
   double _buttonPaddingInset = 0;
   TextStyle _buttonTextStyle = TextStyle();
 
+  // have to set things here, because context is not availible in 'initState'
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
     // Dimensions in logical pixels (dp)
     Size size = MediaQuery.of(context).size;
     double width = size.width;
     double height = size.height;
 
-    if (width < 500) {
+    if (width < 414) {
       _buttonTextStyle = Theme.of(context).textTheme.bodyMedium!;
       _buttonPaddingInset = 10;
     } else  {
