@@ -5,10 +5,10 @@ import '../asteroids.dart';
 // global state management
 import '../api/site_state.dart';
 
-import 'widgets.dart';
+// for each high score entry
+import 'leaderboard_entry.dart';
 
-// TODO: add leaderboard
-// TODO: resize this dynamically on mobile
+// TODO: index from 1 in display
 class Leaderboard extends StatefulWidget {
 
   const Leaderboard({ 
@@ -34,7 +34,6 @@ class _LeaderboardState extends State<Leaderboard> {
     // Dimensions in logical pixels (dp)
     Size size = MediaQuery.of(context).size;
     double width = size.width;
-    double height = size.height;
 
     if (width < 414) {
       _buttonTextStyle = Theme.of(context).textTheme.bodySmall!;

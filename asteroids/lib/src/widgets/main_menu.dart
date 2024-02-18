@@ -1,6 +1,5 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../asteroids.dart';
 
@@ -29,7 +28,6 @@ class _MainMenuState extends State<MainMenu> {
     // Dimensions in logical pixels (dp)
     Size size = MediaQuery.of(context).size;
     double width = size.width;
-    double height = size.height;
 
     if (width < 414) {
       _buttonTextStyle = Theme.of(context).textTheme.bodyMedium!;
