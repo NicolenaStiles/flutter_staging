@@ -3,6 +3,10 @@ import 'package:flutter/services.dart';
 
 import '../asteroids.dart';
 
+// global state management
+import '../api/site_state.dart';
+
+// TODO: force initals to be all-caps
 class GameOverAddScore extends StatefulWidget {
 
   const GameOverAddScore({ 
@@ -112,7 +116,11 @@ class _GameOverAddScoreState extends State<GameOverAddScore> {
             OutlinedButton(
               onPressed: () {
                 if (isValidInitals) {
-                  print('Got value: $_initalInput');
+                  getIt<Leaderboard>().handleScore(
+                    LeaderboardEntry(
+                      score: widget.game.score, 
+                      initals: _initalInput));
+                  widget.game.playState = PlayState.gameOver;
                 }
               },
               style: ButtonStyle(
