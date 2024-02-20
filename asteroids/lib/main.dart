@@ -29,14 +29,6 @@ void main() {
 
   getIt<Leaderboard>().handleScore(oji);
   getIt<Leaderboard>().handleScore(azu);
-  getIt<Leaderboard>().handleScore(azu);
-  getIt<Leaderboard>().handleScore(azu);
-  getIt<Leaderboard>().handleScore(azu);
-  getIt<Leaderboard>().handleScore(azu);
-  getIt<Leaderboard>().handleScore(azu);
-  getIt<Leaderboard>().handleScore(azu);
-  getIt<Leaderboard>().handleScore(azu);
-  getIt<Leaderboard>().handleScore(azu);
 
   runApp(const GameApp());
 }
