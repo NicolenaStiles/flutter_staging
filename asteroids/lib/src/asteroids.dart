@@ -441,6 +441,7 @@ class Asteroids extends FlameGame
     super.update(dt);
 
     switch (_playState) {
+
       case PlayState.debug:
         break;
 
