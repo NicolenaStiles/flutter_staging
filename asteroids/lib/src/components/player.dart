@@ -369,6 +369,7 @@ class Player extends PositionComponent
       } else {
         game.playState = PlayState.gameOver;
       }
+      game.buttonShoot.isPressed = false;
       removeFromParent();
     }
   }
