@@ -8,7 +8,7 @@ import '../asteroids.dart';
 import 'components.dart';
 
 class Joystick extends JoystickComponent
-  with HasVisibility, TapCallbacks {
+  with HasVisibility, TapCallbacks, HasGameReference<Asteroids> {
 
   Joystick({
     required super.key,
