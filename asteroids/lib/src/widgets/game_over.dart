@@ -87,8 +87,8 @@ class _GameOverState extends State<GameOver> {
                 OutlinedButton(
                   onPressed: () {
                     widget.game.world.remove(widget.game.findByKeyName('scoreboard')!);
-                    widget.game.world.remove(widget.game.findByKeyName('button_shoot')!);
                     widget.game.world.remove(widget.game.findByKeyName('joystick')!);
+                    widget.game.world.remove(widget.game.buttonShoot);
                     widget.game.playState = PlayState.mainMenu; 
                   },
                   style: ButtonStyle(

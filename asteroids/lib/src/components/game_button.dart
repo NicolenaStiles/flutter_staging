@@ -15,11 +15,8 @@ class GameButton extends CircleComponent
   final ButtonType type;
   bool isPressed = false;
   
-  ComponentKey key;
-
   GameButton({
     required this.type,
-    required this.key,
     required super.position,
     required super.radius,
   }) : super ( 

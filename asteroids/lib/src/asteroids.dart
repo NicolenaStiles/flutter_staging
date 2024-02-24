@@ -267,7 +267,6 @@ class Asteroids extends FlameGame
                           size.y - (margin + radius));
 
     buttonShoot = GameButton(
-      key: ComponentKey.named('button_shoot'),
       type: ButtonType.shoot, 
       position: shootPos, 
       radius: radius, 
