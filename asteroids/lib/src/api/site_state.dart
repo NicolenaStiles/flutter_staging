@@ -1,9 +1,3 @@
-import 'package:flutter/material.dart';
-
-class SiteState {
-  bool isMobile = false;
-}
-
 class LeaderboardEntry {
 
   int score;
@@ -52,12 +46,15 @@ class Leaderboard {
 
   void printLeaderboard() {
     if (highScores.isEmpty) {
-      debugPrint('No scores in leaderboard!');
+      print('No scores in leaderboard!');
     } else {
       for (int i = 0; i < highScores.length; i++) {
-        debugPrint('${i+1}: ${highScores[i].score} ${highScores[i].initals}');
+        print('${i+1}: ${highScores[i].score} ${highScores[i].initals}');
       }
     }
   }
 }
 
+class SiteState {
+  bool isMobile = false;
+}

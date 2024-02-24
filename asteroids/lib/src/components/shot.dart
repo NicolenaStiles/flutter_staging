@@ -1,13 +1,9 @@
-// general dart packages
-import 'dart:math';
-
 // flame game-related stuff
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 
-// global state management
-import '../../src/api/config.dart';
+import 'dart:math';
 
 // custom components 
 import '../asteroids.dart';
@@ -20,12 +16,12 @@ class Shot extends CircleComponent
     required super.position,
     required super.angle,
   }) : super(
-    radius: getIt<GameConfig>().shotRadius,
+    radius: testCfg.shotRadius,
     anchor: Anchor.center,
     paint: Paint()
       ..color = Colors.white
       ..style = PaintingStyle.fill,
-    children: [CircleHitbox(radius: getIt<GameConfig>().shotRadius)],
+    children: [CircleHitbox(radius: testCfg.shotRadius)],
   );
 
   int _timer = 0;
@@ -52,7 +48,7 @@ class Shot extends CircleComponent
       ..setValues(xMove,yMove)
       ..normalize();
 
-    final shotDisplacement = direciton * (getIt<GameConfig>().shotSpeed * dt);
+    final shotDisplacement = direciton * (testCfg.shotSpeed * dt);
 
     position.add(shotDisplacement);
 
@@ -83,7 +79,7 @@ class Shot extends CircleComponent
   void update(double dt) {
     super.update(dt);
 
-    if (_timer < getIt<GameConfig>().shotTimer) {
+    if (_timer < testCfg.shotTimer) {
       moveBy(dt);
       _timer++;
     } else {

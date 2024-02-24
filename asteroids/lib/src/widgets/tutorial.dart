@@ -14,6 +14,7 @@ class Tutorial extends StatefulWidget {
   State<Tutorial> createState() => _TutorialState();
 }
 
+// TODO: resize this dynamically on mobile
 // TODO: load in ship, scoreboard, and lives during tutorial
 class _TutorialState extends State<Tutorial> {
 
@@ -36,6 +37,7 @@ class _TutorialState extends State<Tutorial> {
     // Dimensions in logical pixels (dp)
     Size size = MediaQuery.of(context).size;
     double width = size.width;
+    double height = size.height;
 
     if (getIt<SiteState>().isMobile) {
       _setAlignment = MainAxisAlignment.center;

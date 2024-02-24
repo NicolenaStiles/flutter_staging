@@ -14,14 +14,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // global state management
-import 'package:get_it/get_it.dart';
 import '../src/api/site_state.dart';
-import '../src/api/config.dart';
 
 // player, asteroid, shot 
+import 'package:get_it/get_it.dart';
 import 'components/components.dart';
 
+// configuration
+import 'config.dart' as game_settings;
+game_settings.GameCfg testCfg = game_settings.GameCfg.desktop();
+
 // debug is only temp here
+// TODO: maybe add "replay" as state?
 enum PlayState { 
   debug, 
   background, 
@@ -48,7 +52,7 @@ class Asteroids extends FlameGame
 
   // game stats
   int score = 0;
-  int lives = 0;
+  int lives = game_settings.playerLives;
   int numAsteroids = 0;
 
   // gesture input
@@ -63,7 +67,8 @@ class Asteroids extends FlameGame
   // timer things
   late Timer countdown;
 
-  // managing overlay state
+  // managing game state
+  // TODO: add overlay logic here
   late PlayState _playState;
   PlayState get playState => _playState;
   set playState(PlayState playState) {
@@ -108,18 +113,21 @@ class Asteroids extends FlameGame
 
     camera.viewfinder.anchor = Anchor.topLeft;
  
+    // WARN: debug only
+    // populate config object with appropriate settings
     isMobile = getIt<SiteState>().isMobile;
 
     if (!isMobile) {
-      getIt.registerSingleton<GameConfig>(GameConfig.desktop());
+      testCfg = game_settings.GameCfg.desktop();
     } else {
-      getIt.registerSingleton<GameConfig>(GameConfig.mobile(width,height));
+      testCfg = game_settings.GameCfg.mobile(width, height);
     }
-    
-    lives = getIt<GameConfig>().playerLives;
 
     playState = PlayState.mainMenu;
     animateBackground(true);
+
+    //playState = PlayState.debug;
+    //layoutDebug();
   }
 
   // testing gesture layout stuff
@@ -147,9 +155,7 @@ class Asteroids extends FlameGame
     world.add(Player(
       key: ComponentKey.named('player'),
       position: shipPos,
-      size : Vector2(
-                getIt<GameConfig>().playerWidth, 
-                getIt<GameConfig>().playerHeight),
+      size : Vector2(testCfg.playerWidth, testCfg.playerHeight),
       isMobileGame: isMobile,
     ));
 
@@ -172,14 +178,14 @@ class Asteroids extends FlameGame
         Vector2 asteroidSize = Vector2(0, 0);
         switch (AsteroidSize.values[j - 1]) {
           case AsteroidSize.large:
-           asteroidSize.x = getIt<GameConfig>().largeAsteroidSize; 
-           asteroidSize.y = getIt<GameConfig>().largeAsteroidSize; 
+           asteroidSize.x = testCfg.largeAsteroidSize; 
+           asteroidSize.y = testCfg.largeAsteroidSize; 
           case AsteroidSize.medium:
-           asteroidSize.x = getIt<GameConfig>().mediumAsteroidSize; 
-           asteroidSize.y = getIt<GameConfig>().mediumAsteroidSize; 
+           asteroidSize.x = testCfg.mediumAsteroidSize; 
+           asteroidSize.y = testCfg.mediumAsteroidSize; 
           case AsteroidSize.small:
-           asteroidSize.x = getIt<GameConfig>().smallAsteroidSize; 
-           asteroidSize.y = getIt<GameConfig>().smallAsteroidSize; 
+           asteroidSize.x = testCfg.smallAsteroidSize; 
+           asteroidSize.y = testCfg.smallAsteroidSize; 
         }
         world.add(Asteroid(
           objType: AsteroidType.values[i - 1],
@@ -195,7 +201,7 @@ class Asteroids extends FlameGame
 
   // HUD elements: scoreboard, lives
   // adding the scoreboard to the HUD
-  // font size is inhereted from getIt<GameConfig>()
+  // font size is inhereted from testCfg
   //
   // component key name : 'scoreboard'
   void addScoreboard() {
@@ -203,7 +209,7 @@ class Asteroids extends FlameGame
     // scoreboard
     TextComponent scoreboard = TextComponent();
     TextStyle scoreStyle = TextStyle(color: Colors.white, 
-                                     fontSize: getIt<GameConfig>().fontSize, 
+                                     fontSize: testCfg.fontSize, 
                                      fontFamily: 'Hyperspace');
     final scoreRenderer = TextPaint(style: scoreStyle);
 
@@ -219,23 +225,23 @@ class Asteroids extends FlameGame
   }
 
   // adding the lives tracker to the HUD
-  // sizing is all determined from logic in getIt<GameConfig>()
+  // sizing is all determined from logic in testCfg
   //
   // component key names ; 'life3' , 'life2', 'life1'
   void addLivesTracker() {
 
     for (int n = 0; n < lives; n++) {
       String lifeKey = 'life$n';
-      double xPos = width - (((n + 1) * getIt<GameConfig>().livesOffset) 
-                                 + (n * getIt<GameConfig>().livesWidth) 
-                                 + (getIt<GameConfig>().livesWidth / 2));
-      double yPos = getIt<GameConfig>().livesOffset + (getIt<GameConfig>().livesHeight / 2);
+      double xPos = width - (((n + 1) * testCfg.livesOffset) 
+                                 + (n * testCfg.livesWidth) 
+                                 + (testCfg.livesWidth / 2));
+      double yPos = testCfg.livesOffset + (testCfg.livesHeight / 2);
 
       world.add(
         Lives(
           key: ComponentKey.named(lifeKey),
           position: Vector2(xPos, yPos),
-          size : Vector2(getIt<GameConfig>().livesWidth, getIt<GameConfig>().livesHeight),
+          size : Vector2(testCfg.livesWidth, testCfg.livesHeight),
         )
       );
     }
@@ -267,7 +273,6 @@ class Asteroids extends FlameGame
                           size.y - (margin + radius));
 
     buttonShoot = GameButton(
-      key: ComponentKey.named('button_shoot'),
       type: ButtonType.shoot, 
       position: shootPos, 
       radius: radius, 
@@ -290,10 +295,11 @@ class Asteroids extends FlameGame
     world.add(Player(
       key: ComponentKey.named('player'),
       position: shipPos,
-      size : Vector2(getIt<GameConfig>().playerWidth, getIt<GameConfig>().playerHeight),
+      size : Vector2(testCfg.playerWidth, testCfg.playerHeight),
       isMobileGame: isMobile,
     ));
   }
+
 
   void generateRandomAsteroid() {
     // generate random velocity value
@@ -329,14 +335,14 @@ class Asteroids extends FlameGame
     AsteroidSize asteroidSizeEnum = AsteroidSize.values[rand.nextInt(3)]; 
     switch (asteroidSizeEnum) {
       case AsteroidSize.large:
-       asteroidSize.x = getIt<GameConfig>().largeAsteroidSize; 
-       asteroidSize.y = getIt<GameConfig>().largeAsteroidSize; 
+       asteroidSize.x = testCfg.largeAsteroidSize; 
+       asteroidSize.y = testCfg.largeAsteroidSize; 
       case AsteroidSize.medium:
-       asteroidSize.x = getIt<GameConfig>().mediumAsteroidSize; 
-       asteroidSize.y = getIt<GameConfig>().mediumAsteroidSize; 
+       asteroidSize.x = testCfg.mediumAsteroidSize; 
+       asteroidSize.y = testCfg.mediumAsteroidSize; 
       case AsteroidSize.small:
-       asteroidSize.x = getIt<GameConfig>().smallAsteroidSize; 
-       asteroidSize.y = getIt<GameConfig>().smallAsteroidSize; 
+       asteroidSize.x = testCfg.smallAsteroidSize; 
+       asteroidSize.y = testCfg.smallAsteroidSize; 
     }
 
     world.add(Asteroid(
@@ -358,7 +364,7 @@ class Asteroids extends FlameGame
       countdown.start();
 
     } else {
-      if (countdown.finished && numAsteroids < getIt<GameConfig>().maxAsteroids) {
+      if (countdown.finished && numAsteroids < 10) {
         generateRandomAsteroid();
         countdown = Timer(5);
         countdown.start();
@@ -378,7 +384,7 @@ class Asteroids extends FlameGame
     playState = PlayState.play;
 
     score = 0;
-    lives = getIt<GameConfig>().playerLives;
+    lives = game_settings.playerLives;
     numAsteroids = 0;
     countdown.stop();
 
@@ -418,7 +424,7 @@ class Asteroids extends FlameGame
     playState = PlayState.play;
 
     score = 0;
-    lives = getIt<GameConfig>().playerLives;
+    lives = game_settings.playerLives;
     numAsteroids = 0;
     countdown.stop();
 
