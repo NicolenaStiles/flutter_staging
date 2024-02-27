@@ -59,7 +59,7 @@ class Asteroids extends FlameGame
 
   // asteroid generation (background, game state, everything)
   final rand = math.Random();
-  late Timer countdown;
+  late Timer countdown = Timer(5);    // arbitrary value to ensure initalized
 
   // master game state logic (overlays and etc.)
   late PlayState _playState;
@@ -118,7 +118,24 @@ class Asteroids extends FlameGame
     
     // TODO: change the start mode to idle on port to website
     playState = PlayState.mainMenu;
-    // animateBackground
+    animateBackground(true);
+  }
+
+  // generate background asteroids for Ze Aesthetique
+  void animateBackground (bool isFirstRun) {
+
+    if (isFirstRun) {
+      generateRandomAsteroid();
+      countdown = Timer(5);
+      countdown.start();
+
+    } else {
+      if (countdown.finished && numAsteroids < getIt<GameConfig>().maxAsteroids) {
+        generateRandomAsteroid();
+        countdown = Timer(5);
+        countdown.start();
+      }
+    }
   }
 
   // HUD elements: scoreboard, lives
@@ -231,7 +248,7 @@ class Asteroids extends FlameGame
       if (world.children.query<GameButton>().isEmpty) {
         addHudButtons();
       } else {
-        buttonShoot.isVisible = false;
+        buttonShoot.isVisible = true;
         buttonShoot.isPressed = false;
       }
     }
@@ -353,16 +370,19 @@ class Asteroids extends FlameGame
       // TODO: implement idle 
       case PlayState.idle:
         countdown.update(dt);
+        animateBackground(false);
         numAsteroids = world.children.query<Asteroid>().length;
         break;
 
       case PlayState.mainMenu:
         countdown.update(dt);
+        animateBackground(false);
         numAsteroids = world.children.query<Asteroid>().length;
         break;
 
       case PlayState.leaderboard:
         countdown.update(dt);
+        animateBackground(false);
         numAsteroids = world.children.query<Asteroid>().length;
         break;
 
@@ -378,6 +398,7 @@ class Asteroids extends FlameGame
         break;
 
       case PlayState.addScore:
+        animateBackground(false);
         if (isMobile) {
           joystick.isVisible = false;
           isJoystickActive = false;
@@ -385,6 +406,7 @@ class Asteroids extends FlameGame
         break;
 
       case PlayState.gameOver:
+        animateBackground(false);
         if (isMobile) {
           joystick.isVisible = false;
           isJoystickActive = false;
