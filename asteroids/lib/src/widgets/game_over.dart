@@ -70,7 +70,7 @@ class _GameOverState extends State<GameOver> {
                 // replay 
                 OutlinedButton(
                   onPressed: () {
-                    widget.game.playState = PlayState.replay; 
+                    widget.game.startGame();
                   },
                   style: ButtonStyle(
                     padding: MaterialStatePropertyAll(EdgeInsets.all(_buttonPaddingInset)),
