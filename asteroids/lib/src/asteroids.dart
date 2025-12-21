@@ -336,11 +336,18 @@ class Asteroids extends FlameGame
 
     playState = PlayState.play;
 
-    // reset basic gameplay trackers first 
+    // reset basic gameplay trackers first
     score = 0;
     lives = getIt<GameConfig>().playerLives;
     numAsteroids = 0;
     countdown.stop();
+
+    // reset input state flags for mobile controls
+    if (isMobile) {
+      isJoystickActive = false;
+      isShootActive = false;
+      shootButtonTapId = 0;
+    }
 
     // set up HUD
     resetHUD();
